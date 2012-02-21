@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<hudson.maven.MavenModuleSetBuild>
+  <actions>
+    <hudson.model.CauseAction>
+      <causes>
+        <hudson.model.Cause_-UserCause>
+          <authenticationName>anonymous</authenticationName>
+        </hudson.model.Cause_-UserCause>
+      </causes>
+    </hudson.model.CauseAction>
+    <hudson.plugins.git.util.BuildData>
+      <buildsByBranchName>
+        <entry>
+          <string>origin/master</string>
+          <hudson.plugins.git.util.Build>
+            <revision>
+              <sha1>
+                <byte-array>vTbPcySFRHFFhRO3SVQSm/AerL8=</byte-array>
+              </sha1>
+              <branches class="list">
+                <hudson.plugins.git.Branch>
+                  <sha1 reference="../../../sha1"/>
+                  <name>origin/master</name>
+                </hudson.plugins.git.Branch>
+              </branches>
+            </revision>
+            <hudsonBuildNumber>4</hudsonBuildNumber>
+          </hudson.plugins.git.util.Build>
+        </entry>
+      </buildsByBranchName>
+      <lastBuild reference="../buildsByBranchName/entry/hudson.plugins.git.util.Build"/>
+    </hudson.plugins.git.util.BuildData>
+    <hudson.scm.SCMRevisionState_-None/>
+    <hudson.plugins.performance.PerformanceBuildAction>
+      <build class="hudson.maven.MavenModuleSetBuild" reference="../../.."/>
+      <parsers>
+        <hudson.plugins.performance.JUnitParser>
+          <glob>**/TEST-*.xml</glob>
+        </hudson.plugins.performance.JUnitParser>
+      </parsers>
+    </hudson.plugins.performance.PerformanceBuildAction>
+  </actions>
+  <number>4</number>
+  <result>FAILURE</result>
+  <duration>4575</duration>
+  <charset>MacRoman</charset>
+  <keepLog>false</keepLog>
+  <builtOn></builtOn>
+  <workspace>/code/performance-plugin/work/jobs/performance-test/workspace</workspace>
+  <hudsonVersion>1.388</hudsonVersion>
+  <scm class="hudson.plugins.git.GitChangeLogParser">
+    <authorOrCommitter>false</authorOrCommitter>
+  </scm>
+  <culprits/>
+</hudson.maven.MavenModuleSetBuild>

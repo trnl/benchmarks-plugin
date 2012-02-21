@@ -1,0 +1,24 @@
+Started by timer
+Building in workspace /code/performance-plugin/work/jobs/performance-test/workspace
+Checkout:workspace / /code/performance-plugin/work/jobs/performance-test/workspace - hudson.remoting.LocalChannel@15be3a66
+Using strategy: Default
+Last Built Revision: Revision b97f6b7c49765fa2d775e889f62c7ae6f9d2a272 (origin/master)
+Checkout:workspace / /code/performance-plugin/work/jobs/performance-test/workspace - hudson.remoting.LocalChannel@15be3a66
+Fetching changes from the remote Git repository
+Fetching upstream changes from git@bitbucket.org:trnl/performance-test.git
+ERROR: Problem fetching from origin / origin - could be unavailable. Continuing anyway
+[8mha:AAAAWB+LCAAAAAAAAABb85aBtbiIQSmjNKU4P08vOT+vOD8nVc8DzHWtSE4tKMnMz/PLL0ldFVf2c+b/lb5MDAwVRQxSaBqcITRIIQMEMIIUFgAAckCEiWAAAAA=[0mERROR: Could not fetch from any repository
+[8mha:AAAAWB+LCAAAAAAAAABb85aBtbiIQSmjNKU4P08vOT+vOD8nVc8DzHWtSE4tKMnMz/PLL0ldFVf2c+b/lb5MDAwVRQxSaBqcITRIIQMEMIIUFgAAckCEiWAAAAA=[0mFATAL: Could not fetch from any repository
+[8mha:AAAAWB+LCAAAAAAAAABb85aBtbiIQSmjNKU4P08vOT+vOD8nVc8DzHWtSE4tKMnMz/PLL0ldFVf2c+b/lb5MDAwVRQxSaBqcITRIIQMEMIIUFgAAckCEiWAAAAA=[0mhudson.plugins.git.GitException: Could not fetch from any repository
+	at hudson.plugins.git.GitSCM$2.invoke(GitSCM.java:852)
+	at hudson.plugins.git.GitSCM$2.invoke(GitSCM.java:812)
+	at hudson.FilePath.act(FilePath.java:788)
+	at hudson.FilePath.act(FilePath.java:770)
+	at hudson.plugins.git.GitSCM.checkout(GitSCM.java:812)
+	at hudson.model.AbstractProject.checkout(AbstractProject.java:1195)
+	at hudson.model.AbstractBuild$AbstractRunner.checkout(AbstractBuild.java:576)
+	at hudson.model.AbstractBuild$AbstractRunner.run(AbstractBuild.java:465)
+	at hudson.model.Run.run(Run.java:1409)
+	at hudson.maven.MavenModuleSetBuild.run(MavenModuleSetBuild.java:481)
+	at hudson.model.ResourceController.execute(ResourceController.java:88)
+	at hudson.model.Executor.run(Executor.java:238)

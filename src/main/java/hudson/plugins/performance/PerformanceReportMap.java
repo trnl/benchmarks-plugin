@@ -2,28 +2,16 @@ package hudson.plugins.performance;
 
 import hudson.model.AbstractBuild;
 import hudson.model.ModelObject;
-
-import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
-
 import hudson.model.TaskListener;
 import hudson.util.ChartUtil;
 import hudson.util.ChartUtil.NumberOnlyBuildLabel;
 import hudson.util.DataSetBuilder;
-import java.io.FilenameFilter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
+
+import java.io.*;
+import java.net.URLDecoder;
+import java.util.*;
 
 /**
  * Root object of a performance report.
@@ -36,7 +24,7 @@ public class PerformanceReportMap implements ModelObject {
     private transient PerformanceBuildAction buildAction;
     /**
      * {@link PerformanceReport}s are keyed by {@link PerformanceReport#reportFileName}
-     *
+     * <p/>
      * Test names are arbitrary human-readable and URL-safe string that identifies an individual report.
      */
     private Map<String, PerformanceReport> performanceReportMap = new LinkedHashMap<String, PerformanceReport>();
@@ -45,8 +33,7 @@ public class PerformanceReportMap implements ModelObject {
     /**
      * Parses the reports and build a {@link PerformanceReportMap}.
      *
-     * @throws IOException
-     *      If a report fails to parse.
+     * @throws IOException If a report fails to parse.
      */
     PerformanceReportMap(final PerformanceBuildAction buildAction, TaskListener listener)
             throws IOException {
@@ -96,7 +83,7 @@ public class PerformanceReportMap implements ModelObject {
      * <p>
      * Give the Performance report with the parameter for name in Bean
      * </p>
-     * 
+     *
      * @param performanceReportName
      * @return
      */
@@ -106,9 +93,8 @@ public class PerformanceReportMap implements ModelObject {
 
     /**
      * Get a URI report within a Performance report file
-     * 
-     * @param uriReport
-     *            "Performance report file name";"URI name"
+     *
+     * @param uriReport "Performance report file name";"URI name"
      * @return
      */
     public UriReport getUriReport(String uriReport) {
@@ -166,7 +152,7 @@ public class PerformanceReportMap implements ModelObject {
      * Verify if the PerformanceReport exist the performanceReportName must to be like it
      * is in the build
      * </p>
-     * 
+     *
      * @param performanceReportName
      * @return boolean
      */
@@ -175,7 +161,7 @@ public class PerformanceReportMap implements ModelObject {
     }
 
     public void doRespondingTimeGraph(StaplerRequest request,
-            StaplerResponse response) throws IOException {
+                                      StaplerResponse response) throws IOException {
         String parameter = request.getParameter("performanceReportPosition");
         AbstractBuild<?, ?> previousBuild = getBuild();
         final Map<AbstractBuild<?, ?>, Map<String, PerformanceReport>> buildReports = new LinkedHashMap<AbstractBuild<?, ?>, Map<String, PerformanceReport>>();
@@ -196,14 +182,17 @@ public class PerformanceReportMap implements ModelObject {
             previousBuild = previousBuild.getPreviousBuild();
         }
         //Now we should have the data necessary to generate the graphs!
-        DataSetBuilder<String, NumberOnlyBuildLabel> dataSetBuilderAverage = new DataSetBuilder<String, NumberOnlyBuildLabel>();
+        DataSetBuilder<String, NumberOnlyBuildLabel> dataSetBuilder = new DataSetBuilder<String, NumberOnlyBuildLabel>();
         for (AbstractBuild<?, ?> currentBuild : buildReports.keySet()) {
             NumberOnlyBuildLabel label = new NumberOnlyBuildLabel(currentBuild);
             PerformanceReport report = buildReports.get(currentBuild).get(parameter);
-            dataSetBuilderAverage.add(report.getAverage(), Messages.ProjectAction_Average(), label);
+            //TODO single
+            for (Map.Entry<String, UriReport> entry : report.getUriReportMap().entrySet()) {
+                dataSetBuilder.add(entry.getValue().getMax(),entry.getKey(),label);
+            }
         }
         ChartUtil.generateGraph(request, response,
-                PerformanceProjectAction.createRespondingTimeChart(dataSetBuilderAverage.build()), 400, 200);
+                PerformanceProjectAction.createRespondingTimeChart(dataSetBuilder.build()), 400, 200);
     }
 
     private void parseReports(AbstractBuild<?, ?> build, TaskListener listener, PerformanceReportCollector collector, final String filename) throws IOException {
@@ -238,7 +227,7 @@ public class PerformanceReportMap implements ModelObject {
                     File[] listFiles = dir.listFiles(new FilenameFilter() {
 
                         public boolean accept(File dir, String name) {
-                            if(filename == null){
+                            if (filename == null) {
                                 return true;
                             }
                             if (name.equals(filename)) {

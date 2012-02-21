@@ -1,0 +1,10 @@
+Changes in branch origin/master, between bd36cf7324854471458513b74954129bf01eacbf and b97f6b7c49765fa2d775e889f62c7ae6f9d2a272
+commit b97f6b7c49765fa2d775e889f62c7ae6f9d2a272
+tree eda0daee941ccab74f8bb73667702738803f1355
+parent bd36cf7324854471458513b74954129bf01eacbf
+author trnl <trnl.me@gmail.com> 1329826181 +0300
+committer trnl <trnl.me@gmail.com> 1329826181 +0300
+
+    Adding some error
+
+:100644 100644 39623a30875e4a3fdb7490f5660fb725433ae28d d356432490b905479672f3717fe58091a9c97bff M	src/test/java/com/test/Inserting.java

@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<fingerprint>
+  <timestamp>2012-02-21 13:18:48.877 EET</timestamp>
+  <md5sum>b66d0c48e1f1dc54d4227db52512c15b</md5sum>
+  <fileName>org.hamcrest:hamcrest-core-1.1.jar</fileName>
+  <usages>
+    <entry>
+      <string>performance-test/ptest:ptest</string>
+      <ranges>6-51,53-65</ranges>
+    </entry>
+    <entry>
+      <string>performance-test</string>
+      <ranges>6-51,53-65</ranges>
+    </entry>
+  </usages>
+  <facets/>
+</fingerprint>
