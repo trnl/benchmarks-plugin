@@ -13,6 +13,21 @@
 
     <developers>
         <developer>
+            <id>manolo</id>
+            <name>Manuel Carrasco Monino</name>
+            <email>manolo@apache.org</email>
+        </developer>
+        <developer>
+            <id>vergnes</id>
+            <name>Vergnes</name>
+            <email>vergnes@dev.java.net</email>
+        </developer>
+        <developer>
+            <id>aespy</id>
+            <name>Arnaud Espy</name>
+            <email>aespy@dev.java.net</email>
+        </developer>
+        <developer>
             <id>trnl</id>
             <name>Uladzimir Mihura</name>
             <email>trnl.me@gmail.com</email>
