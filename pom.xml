@@ -6,34 +6,18 @@
         <artifactId>plugin</artifactId>
         <version>1.451</version>
     </parent>
-    <artifactId>performance</artifactId>
+    <artifactId>benchmarks</artifactId>
     <packaging>hpi</packaging>
-    <version>1.8-SNAPSHOT</version>
-    <name>Performance plugin</name>
-    <url>http://wiki.jenkins-ci.org/display/JENKINS/Performance+Plugin</url>
+    <version>1.0-SNAPSHOT</version>
+    <name>Benchmarks plugin</name>
 
     <developers>
         <developer>
-            <id>manolo</id>
-            <name>Manuel Carrasco Monino</name>
-            <email>manolo@apache.org</email>
-        </developer>
-        <developer>
-            <id>vergnes</id>
-            <name>Vergnes</name>
-            <email>vergnes@dev.java.net</email>
-        </developer>
-        <developer>
-            <id>aespy</id>
-            <name>Arnaud Espy</name>
-            <email>aespy@dev.java.net</email>
+            <id>trnl</id>
+            <name>Uladzimir Mihura</name>
+            <email>trnl.me@gmail.com</email>
         </developer>
     </developers>
-
-    <scm>
-        <connection>scm:git:git://github.com/jenkinsci/performance-plugin.git</connection>
-        <developerConnection>scm:git:git@github.com:jenkinsci/performance-plugin.git</developerConnection>
-    </scm>
 
     <dependencies>
         <dependency>
@@ -43,13 +27,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <distributionManagement>
-        <repository>
-            <id>maven.jenkins-ci.org</id>
-            <url>http://maven.jenkins-ci.org:8081/content/repositories/releases/</url>
-        </repository>
-    </distributionManagement>
 
     <build>
         <plugins>

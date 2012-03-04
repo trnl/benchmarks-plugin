@@ -10,19 +10,22 @@ table.source td {
     text-align: right;
     white-space: nowrap;
 }
+
 table.source td.left {
     text-align: left;
 }
+
 table.source td.center {
     text-align: center;
 }
+
 table.source td.right {
     text-align: right;
 }
-table.source a {
-	text-decoration: none;
-}
 
+table.source a {
+    text-decoration: none;
+}
 
 table.source th {
     padding-left: 0.5em;
@@ -38,18 +41,20 @@ div.title {
 }
 
 .bold {
-	font-weight: bold; 
+    font-weight: bold;
 }
 
 .nwrap {
-  white-space: nowrap;
+    white-space: nowrap;
 }
+
 .red, table.source .red a {
-	color: red;
+    color: red;
 }
+
 .trend {
-	margin-right: 40px;
-	border: solid 1px pink;
-        margin-bottom: 20px;
+    margin-right: 40px;
+    border: solid 1px #d1d1d1;
+    margin-bottom: 20px;
 }
 
