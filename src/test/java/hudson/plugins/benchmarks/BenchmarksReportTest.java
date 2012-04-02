@@ -22,33 +22,33 @@ public class BenchmarksReportTest {
         benchmarksReport = new BenchmarksReport();
         benchmarksReport.setBuildAction(buildAction);
     }
-
-    @org.junit.Test
-    public void testAddBenchmark() throws Exception {
-        PrintStream printStream = EasyMock.createMock(PrintStream.class);
-        EasyMock.expect(
-                benchmarksReport.getBuildAction().getHudsonConsoleWriter())
-                .andReturn(printStream);
-        printStream
-                .println("label cannot be empty, please ensure your jmx file specifies name properly for each http sample: skipping sample");
-        EasyMock.replay(printStream);
-        EasyMock.replay(benchmarksReport.getBuildAction());
-
-        Benchmark b = new Benchmark();
-        benchmarksReport.addBenchmark(b);
-
-        b.setName("invalidCharacter/");
-        benchmarksReport.addBenchmark(b);
-        Benchmark benchmark = benchmarksReport.get(
-                "invalidCharacter_");
-        assertNotNull(benchmark);
-
-        String uri = "uri";
-        b.setName(uri);
-        benchmarksReport.addBenchmark(b);
-        benchmark = benchmarksReport.get(uri);
-        assertNotNull(benchmark);
-    }
+//
+//    @org.junit.Test
+//    public void testAddBenchmark() throws Exception {
+//        PrintStream printStream = EasyMock.createMock(PrintStream.class);
+//        EasyMock.expect(
+//                benchmarksReport.getBuildAction().getHudsonConsoleWriter())
+//                .andReturn(printStream);
+//        printStream
+//                .println("label cannot be empty, please ensure your jmx file specifies name properly for each http sample: skipping sample");
+//        EasyMock.replay(printStream);
+//        EasyMock.replay(benchmarksReport.getBuildAction());
+//
+//        Benchmark b = new Benchmark();
+//        benchmarksReport.addBenchmark(b);
+//
+//        b.setName("invalidCharacter/");
+//        benchmarksReport.addBenchmark(b);
+//        Benchmark benchmark = benchmarksReport.get(
+//                "invalidCharacter_");
+//        assertNotNull(benchmark);
+//
+//        String uri = "uri";
+//        b.setName(uri);
+//        benchmarksReport.addBenchmark(b);
+//        benchmark = benchmarksReport.get(uri);
+//        assertNotNull(benchmark);
+//    }
 
 
 //	@Test

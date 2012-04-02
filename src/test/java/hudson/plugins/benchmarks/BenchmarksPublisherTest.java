@@ -21,7 +21,7 @@ public class BenchmarksPublisherTest extends HudsonTestCase {
 		BenchmarksPublisher after = p.getPublishersList().get(
 				BenchmarksPublisher.class);
 		assertEqualBeans(before, after,
-				"errorFailedThreshold,errorUnstableThreshold");
+				"failureThreshold,unstableThreshold");
 		assertEquals(before.getParsers().size(), after.getParsers().size());
 		assertEqualBeans(before.getParsers().get(0), after.getParsers().get(0),
 				"glob");

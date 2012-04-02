@@ -60,12 +60,12 @@ public class BenchmarksPublisher extends Recorder {
         this.parsers = new ArrayList<ReportParser>(parsers);
     }
 
-    public static File getPerformanceReport(AbstractBuild<?, ?> build,
-                                            String parserDisplayName, String performanceReportName) {
+    public static File getBenchmarksReport(AbstractBuild<?, ?> build,
+                                           String parserDisplayName, String benchmarksReportName) {
         return new File(build.getRootDir(),
-                BenchmarksReportMap.getPerformanceReportFileRelativePath(
+                BenchmarksReportMap.getBenchmarksReportFileRelativePath(
                         parserDisplayName,
-                        getPerformanceReportBuildFileName(performanceReportName)));
+                        getBenchmarksReportBuildFileName(benchmarksReportName)));
     }
 
     @Override
@@ -87,15 +87,15 @@ public class BenchmarksPublisher extends Recorder {
      * Maven Performance plugin
      * </p>
      *
-     * @param performanceReportWorkspaceName
+     * @param benchmarksReportWorkspaceName
      * @return the name of the BenchmarksReport in the Build
      */
-    public static String getPerformanceReportBuildFileName(
-            String performanceReportWorkspaceName) {
-        String result = performanceReportWorkspaceName;
-        if (performanceReportWorkspaceName != null) {
+    public static String getBenchmarksReportBuildFileName(
+            String benchmarksReportWorkspaceName) {
+        String result = benchmarksReportWorkspaceName;
+        if (benchmarksReportWorkspaceName != null) {
             Pattern p = Pattern.compile("-[0-9]*\\.xml");
-            Matcher matcher = p.matcher(performanceReportWorkspaceName);
+            Matcher matcher = p.matcher(benchmarksReportWorkspaceName);
             if (matcher.find()) {
                 result = matcher.replaceAll(".xml");
             }
@@ -142,19 +142,19 @@ public class BenchmarksPublisher extends Recorder {
         PrintStream logger = listener.getLogger();
 
         if (unstableThreshold > 0 && unstableThreshold < 100) {
-            logger.println("Performance: Percentage of errors greater or equal than "
+            logger.println("Benchmarks: Percentage of errors greater or equal than "
                     + unstableThreshold + "% sets the build as "
                     + Result.UNSTABLE.toString().toLowerCase());
         } else {
-            logger.println("Performance: No threshold configured for making the test "
+            logger.println("Benchmarks: No threshold configured for making the test "
                     + Result.UNSTABLE.toString().toLowerCase());
         }
         if (failureThreshold > 0 && failureThreshold < 100) {
-            logger.println("Performance: Percentage of errors greater or equal than "
+            logger.println("Benchmarks: Percentage of errors greater or equal than "
                     + failureThreshold + "% sets the build as "
                     + Result.FAILURE.toString().toLowerCase());
         } else {
-            logger.println("Performance: No threshold configured for making the test "
+            logger.println("Benchmarks: No threshold configured for making the test "
                     + Result.FAILURE.toString().toLowerCase());
         }
 
@@ -165,7 +165,7 @@ public class BenchmarksPublisher extends Recorder {
 
         for (ReportParser parser : parsers) {
             String glob = parser.glob;
-            logger.println("Performance: Recording " + parser.getReportName()
+            logger.println("Benchmarks: Recording " + parser.getReportName()
                     + " reports '" + glob + "'");
 
             List<FilePath> files = locatePerformanceReports(build.getWorkspace(),
@@ -176,7 +176,7 @@ public class BenchmarksPublisher extends Recorder {
                     return true;
                 }
                 build.setResult(Result.FAILURE);
-                logger.println("Performance: no " + parser.getReportName()
+                logger.println("Benchmarks: no " + parser.getReportName()
                         + " files matching '" + glob
                         + "' have been found. Has the report generated?. Setting Build to "
                         + build.getResult());
@@ -196,13 +196,15 @@ public class BenchmarksPublisher extends Recorder {
                 //get prev build
                 BenchmarksBuildAction ba = build.getPreviousBuild().getAction(BenchmarksBuildAction.class);
                 if (ba != null) {
-                    BenchmarksReport prevReport = ba.getBenchmarksReportMap().getPerformanceReport(
+                    BenchmarksReport prevReport = ba.getBenchmarksReportMap().getBenchmarksReport(
                             r.getReportFileName());
                     for (String name : r.getNames()) {
-                        long prev = prevReport.get(name).getDuration();
-                        long curr = r.get(name).getDuration();
-                        if (prev>0 && (curr / prev - 1) * 100 > unstableThreshold) result = Result.UNSTABLE;
-                        if (prev>0 && (curr / prev - 1) * 100 > failureThreshold) result = Result.FAILURE;
+                        if (prevReport != null && prevReport.contains(name)) {
+                            long prev = prevReport.get(name).getDuration();
+                            long curr = r.get(name).getDuration();
+                            if (prev > 0 && (curr / prev - 1) * 100 > unstableThreshold) result = Result.UNSTABLE;
+                            if (prev > 0 && (curr / prev - 1) * 100 > failureThreshold) result = Result.FAILURE;
+                        }
                     }
                 }
 
@@ -224,11 +226,11 @@ public class BenchmarksPublisher extends Recorder {
             throws IOException, InterruptedException {
         List<File> localReports = new ArrayList<File>();
         for (FilePath src : files) {
-            final File localReport = getPerformanceReport(build, parserDisplayName,
+            final File localReport = getBenchmarksReport(build, parserDisplayName,
                     src.getName());
             if (src.isDirectory()) {
-                logger.println("Performance: File '" + src.getName()
-                        + "' is a directory, not a Performance Report");
+                logger.println("Benchmarks: File '" + src.getName()
+                        + "' is a directory, not a Benchmarks Report");
                 continue;
             }
             src.copyTo(new FilePath(localReport));
@@ -257,6 +259,6 @@ public class BenchmarksPublisher extends Recorder {
     }
 
     public void setUnstableThreshold(int unstableThreshold) {
-        this.unstableThreshold = Math.max(0, Math.min(unstableThreshold,100));
+        this.unstableThreshold = Math.max(0, Math.min(unstableThreshold, 100));
     }
 }

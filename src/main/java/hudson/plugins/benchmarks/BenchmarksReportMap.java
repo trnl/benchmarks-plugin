@@ -29,8 +29,8 @@ public class BenchmarksReportMap implements ModelObject {
      * <p/>
      * Test names are arbitrary human-readable and URL-safe string that identifies an individual report.
      */
-    private Map<String, BenchmarksReport> performanceReportMap = new LinkedHashMap<String, BenchmarksReport>();
-    private static final String PERFORMANCE_REPORTS_DIRECTORY = "benchmarks-reports";
+    private Map<String, BenchmarksReport> benchmarksReportMap = new LinkedHashMap<String, BenchmarksReport>();
+    private static final String BENCHMARKS_REPORTS = "benchmarks-reports";
 
     /**
      * Parses the reports and build a {@link BenchmarksReportMap}.
@@ -40,12 +40,12 @@ public class BenchmarksReportMap implements ModelObject {
     BenchmarksReportMap(final BenchmarksBuildAction buildAction, TaskListener listener)
             throws IOException {
         this.buildAction = buildAction;
-        parseReports(getBuild(), listener, new PerformanceReportCollector() {
+        parseReports(getBuild(), listener, new BenchmarksReportCollector() {
 
             public void addAll(Collection<BenchmarksReport> reports) {
                 for (BenchmarksReport r : reports) {
                     r.setBuildAction(buildAction);
-                    performanceReportMap.put(r.getReportFileName(), r);
+                    benchmarksReportMap.put(r.getReportFileName(), r);
                 }
             }
         }, null);
@@ -54,7 +54,7 @@ public class BenchmarksReportMap implements ModelObject {
     private void addAll(Collection<BenchmarksReport> reports) {
         for (BenchmarksReport r : reports) {
             r.setBuildAction(buildAction);
-            performanceReportMap.put(r.getReportFileName(), r);
+            benchmarksReportMap.put(r.getReportFileName(), r);
         }
     }
 
@@ -70,54 +70,54 @@ public class BenchmarksReportMap implements ModelObject {
         return Messages.Report_DisplayName();
     }
 
-    public List<BenchmarksReport> getPerformanceListOrdered() {
+    public List<BenchmarksReport> getBenchmarksListOrdered() {
         List<BenchmarksReport> listBenchmarks = new ArrayList<BenchmarksReport>(
-                getPerformanceReportMap().values());
+                getBenchmarksReportMap().values());
         Collections.sort(listBenchmarks);
         return listBenchmarks;
     }
 
-    public Map<String, BenchmarksReport> getPerformanceReportMap() {
-        return performanceReportMap;
+    public Map<String, BenchmarksReport> getBenchmarksReportMap() {
+        return benchmarksReportMap;
     }
 
     /**
      * <p>
-     * Give the Performance report with the parameter for name in Bean
+     * Give the Benchmarks report with the parameter for name in Bean
      * </p>
      *
-     * @param performanceReportName
+     * @param benchmarksReportName
      * @return
      */
-    public BenchmarksReport getPerformanceReport(String performanceReportName) {
-        return performanceReportMap.get(performanceReportName);
+    public BenchmarksReport getBenchmarksReport(String benchmarksReportName) {
+        return benchmarksReportMap.get(benchmarksReportName);
     }
 
     public String getUrlName() {
-        return "performanceReportList";
+        return "benchmarksReportList";
     }
 
     void setBuildAction(BenchmarksBuildAction buildAction) {
         this.buildAction = buildAction;
     }
 
-    public void setPerformanceReportMap(
-            Map<String, BenchmarksReport> performanceReportMap) {
-        this.performanceReportMap = performanceReportMap;
+    public void setBenchmarksReportMap(
+            Map<String, BenchmarksReport> benchmarksReportMap) {
+        this.benchmarksReportMap = benchmarksReportMap;
     }
 
-    public static String getPerformanceReportFileRelativePath(
+    public static String getBenchmarksReportFileRelativePath(
             String parserDisplayName, String reportFileName) {
         return getRelativePath(parserDisplayName, reportFileName);
     }
 
-    public static String getPerformanceReportDirRelativePath() {
+    public static String getBenchmarksReportDirRelativePath() {
         return getRelativePath();
     }
 
     private static String getRelativePath(String... suffixes) {
         StringBuilder sb = new StringBuilder(100);
-        sb.append(PERFORMANCE_REPORTS_DIRECTORY);
+        sb.append(BENCHMARKS_REPORTS);
         for (String suffix : suffixes) {
             sb.append(File.separator).append(suffix);
         }
@@ -126,25 +126,25 @@ public class BenchmarksReportMap implements ModelObject {
 
     /**
      * <p>
-     * Verify if the BenchmarksReport exist the performanceReportName must to be like it
+     * Verify if the BenchmarksReport exist the benchmarksReportName must to be like it
      * is in the build
      * </p>
      *
-     * @param performanceReportName
+     * @param benchmarksReportName
      * @return boolean
      */
-    public boolean isFailed(String performanceReportName) {
-        return getPerformanceReport(performanceReportName) == null;
+    public boolean isFailed(String benchmarksReportName) {
+        return getBenchmarksReport(benchmarksReportName) == null;
     }
 
     public void doRespondingTimeGraph(StaplerRequest request,
                                       StaplerResponse response) throws IOException {
-        String parameter = request.getParameter("performanceReportPosition");
+        String parameter = request.getParameter("benchmarksReportPosition");
         AbstractBuild<?, ?> previousBuild = getBuild();
         final Map<AbstractBuild<?, ?>, Map<String, BenchmarksReport>> buildReports = new LinkedHashMap<AbstractBuild<?, ?>, Map<String, BenchmarksReport>>();
         while (previousBuild != null) {
             final AbstractBuild<?, ?> currentBuild = previousBuild;
-            parseReports(currentBuild, TaskListener.NULL, new PerformanceReportCollector() {
+            parseReports(currentBuild, TaskListener.NULL, new BenchmarksReportCollector() {
 
                 public void addAll(Collection<BenchmarksReport> parse) {
                     for (BenchmarksReport benchmarksReport : parse) {
@@ -172,9 +172,9 @@ public class BenchmarksReportMap implements ModelObject {
                 BenchmarksProjectAction.createRespondingTimeChart(dataSetBuilder.build()), 400, 200);
     }
 
-    private void parseReports(AbstractBuild<?, ?> build, TaskListener listener, PerformanceReportCollector collector, final String filename) throws IOException {
+    private void parseReports(AbstractBuild<?, ?> build, TaskListener listener, BenchmarksReportCollector collector, final String filename) throws IOException {
         File repo = new File(build.getRootDir(),
-                BenchmarksReportMap.getPerformanceReportDirRelativePath());
+                BenchmarksReportMap.getBenchmarksReportDirRelativePath());
 
         // files directly under the directory are for JMeter, for compatibility reasons.
         File[] files = repo.listFiles(new FileFilter() {
@@ -219,7 +219,7 @@ public class BenchmarksReportMap implements ModelObject {
         }
     }
 
-    private interface PerformanceReportCollector {
+    private interface BenchmarksReportCollector {
 
         public void addAll(Collection<BenchmarksReport> parse);
     }

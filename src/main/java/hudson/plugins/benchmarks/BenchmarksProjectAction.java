@@ -17,6 +17,7 @@ import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 import org.jfree.chart.title.LegendTitle;
+import org.jfree.chart.title.TextTitle;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.RectangleInsets;
@@ -69,7 +70,7 @@ public final class BenchmarksProjectAction implements Action {
     protected static JFreeChart createRespondingTimeChart(CategoryDataset dataset) {
 
         final JFreeChart chart = ChartFactory.createLineChart(
-                Messages.ProjectAction_RespondingTime(), // charttitle
+                null, // charttitle
                 null, // unused
                 "ms", // range axis label
                 dataset, // data
@@ -82,7 +83,8 @@ public final class BenchmarksProjectAction implements Action {
         // NOW DO SOME OPTIONAL CUSTOMISATION OF THE CHART...
 
         final LegendTitle legend = chart.getLegend();
-        legend.setPosition(RectangleEdge.RIGHT);
+        legend.setPosition(RectangleEdge.BOTTOM);
+
 
         chart.setBackgroundPaint(Color.WHITE);
 
@@ -144,7 +146,7 @@ public final class BenchmarksProjectAction implements Action {
                 if (benchmarksBuildAction == null) {
                     continue;
                 }
-                BenchmarksReport benchmarksReport = benchmarksBuildAction.getBenchmarksReportMap().getPerformanceReport(
+                BenchmarksReport benchmarksReport = benchmarksBuildAction.getBenchmarksReportMap().getBenchmarksReport(
                         performanceReportNameFile);
                 if (benchmarksReport == null) {
                     nbBuildsToAnalyze--;
@@ -240,7 +242,7 @@ public final class BenchmarksProjectAction implements Action {
             return benchmarksReports;
         }
         File file = new File(this.project.getLastCompletedBuild().getRootDir(),
-                BenchmarksReportMap.getPerformanceReportDirRelativePath());
+                BenchmarksReportMap.getBenchmarksReportDirRelativePath());
         if (!file.isDirectory()) {
             return benchmarksReports;
         }
@@ -340,7 +342,7 @@ public final class BenchmarksProjectAction implements Action {
                     continue;
                 }
                 BenchmarksReport report = null;
-                report = benchmarksBuildAction.getBenchmarksReportMap().getPerformanceReport(
+                report = benchmarksBuildAction.getBenchmarksReportMap().getBenchmarksReport(
                         performanceReportNameFile);
                 if (report == null) {
                     nbBuildsToAnalyze--;

@@ -89,6 +89,7 @@ public class JUnitParser extends ReportParser {
                             status = 1;
                             benchmark = new Benchmark();
                             String time = attributes.getValue("time");
+                            if (time != null) time = time.replaceAll("[^\\d\\.]+","");
                             double duration = Double.parseDouble(time);
                             benchmark.setDuration((long) (duration * 1000));
                             benchmark.setSuccessful(true);

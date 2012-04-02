@@ -63,4 +63,8 @@ public class BenchmarksReport implements
     BenchmarksBuildAction getBuildAction() {
         return buildAction;
     }
+
+    public boolean contains(String name) {
+        return benchmarks.containsKey(name);
+    }
 }
