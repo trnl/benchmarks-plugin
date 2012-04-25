@@ -17,7 +17,6 @@ import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 import org.jfree.chart.title.LegendTitle;
-import org.jfree.chart.title.TextTitle;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.RectangleInsets;
@@ -266,7 +265,7 @@ public final class BenchmarksProjectAction implements Action {
     }
 
     public boolean isTrendVisibleOnProjectDashboard() {
-        if (getBenchmarksReports() != null) {
+        if (getBenchmarksReports() != null && getBenchmarksReports().size() > 0) {
             return true;
         } else {
             return false;
