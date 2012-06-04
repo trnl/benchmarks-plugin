@@ -1,0 +1,172 @@
+[
+  {
+    "min": "0",
+    "median": "0",
+    "title": "com.mongodb.performance.bson.Generate.generateObjectId",
+    "max": "0",
+    "executionTime": "29",
+    "90percentile": "0",
+    "invocations": 2000.0,
+    "average": "0"
+  },
+  {
+    "min": "0",
+    "median": "0",
+    "title": "com.mongodb.performance.bson.Encode.encodeString100TypeDocument",
+    "max": "1",
+    "executionTime": "177",
+    "90percentile": "0",
+    "invocations": 500.0,
+    "average": "0.002"
+  },
+  {
+    "min": "11",
+    "median": "11",
+    "title": "com.mongodb.performance.bson.Encode.encodeString10000TypeDocument",
+    "max": "13",
+    "executionTime": "7318",
+    "90percentile": "12",
+    "invocations": 500.0,
+    "average": "11.3"
+  },
+  {
+    "min": "0",
+    "median": "0",
+    "title": "com.mongodb.performance.bson.Encode.encodeArrayTypeDocument",
+    "max": "1",
+    "executionTime": "138",
+    "90percentile": "0",
+    "invocations": 500.0,
+    "average": "0.002"
+  },
+  {
+    "min": "0",
+    "median": "0",
+    "title": "com.mongodb.performance.bson.Encode.encodeDateTypeDocument",
+    "max": "0",
+    "executionTime": "76",
+    "90percentile": "0",
+    "invocations": 500.0,
+    "average": "0"
+  },
+  {
+    "min": "0",
+    "median": "0",
+    "title": "com.mongodb.performance.bson.Encode.encodeEmbeddedTypeDocument",
+    "max": "1",
+    "executionTime": "83",
+    "90percentile": "0",
+    "invocations": 500.0,
+    "average": "0.002"
+  },
+  {
+    "min": "0",
+    "median": "0",
+    "title": "com.mongodb.performance.bson.Encode.encodeBooleanTypeDocument",
+    "max": "0",
+    "executionTime": "49",
+    "90percentile": "0",
+    "invocations": 500.0,
+    "average": "0"
+  },
+  {
+    "min": "0",
+    "median": "0",
+    "title": "com.mongodb.performance.bson.Encode.encodeIntegerTypeDocument",
+    "max": "0",
+    "executionTime": "58",
+    "90percentile": "0",
+    "invocations": 500.0,
+    "average": "0"
+  },
+  {
+    "min": "0",
+    "median": "0",
+    "title": "com.mongodb.performance.bson.Encode.encodeDoubleTypeDocument",
+    "max": "0",
+    "executionTime": "51",
+    "90percentile": "0",
+    "invocations": 500.0,
+    "average": "0"
+  },
+  {
+    "min": "0",
+    "median": "0",
+    "title": "com.mongodb.performance.bson.Decode.decodeString100TypeDocument",
+    "max": "6",
+    "executionTime": "321",
+    "90percentile": "1",
+    "invocations": 500.0,
+    "average": "0.176"
+  },
+  {
+    "min": "2",
+    "median": "2",
+    "title": "com.mongodb.performance.bson.Decode.decodeString10000TypeDocument",
+    "max": "3",
+    "executionTime": "1486",
+    "90percentile": "2",
+    "invocations": 500.0,
+    "average": "2.004"
+  },
+  {
+    "min": "0",
+    "median": "0",
+    "title": "com.mongodb.performance.bson.Decode.decodeArrayTypeDocument",
+    "max": "3",
+    "executionTime": "204",
+    "90percentile": "0",
+    "invocations": 500.0,
+    "average": "0.018"
+  },
+  {
+    "min": "0",
+    "median": "0",
+    "title": "com.mongodb.performance.bson.Decode.decodeDateTypeDocument",
+    "max": "0",
+    "executionTime": "64",
+    "90percentile": "0",
+    "invocations": 500.0,
+    "average": "0"
+  },
+  {
+    "min": "0",
+    "median": "0",
+    "title": "com.mongodb.performance.bson.Decode.decodeEmbeddedTypeDocument",
+    "max": "0",
+    "executionTime": "92",
+    "90percentile": "0",
+    "invocations": 500.0,
+    "average": "0"
+  },
+  {
+    "min": "0",
+    "median": "0",
+    "title": "com.mongodb.performance.bson.Decode.decodeBooleanTypeDocument",
+    "max": "0",
+    "executionTime": "50",
+    "90percentile": "0",
+    "invocations": 500.0,
+    "average": "0"
+  },
+  {
+    "min": "0",
+    "median": "0",
+    "title": "com.mongodb.performance.bson.Decode.decodeIntegerTypeDocument",
+    "max": "0",
+    "executionTime": "50",
+    "90percentile": "0",
+    "invocations": 500.0,
+    "average": "0"
+  },
+  {
+    "min": "0",
+    "median": "0",
+    "title": "com.mongodb.performance.bson.Decode.decodeDoubleTypeDocument",
+    "max": "0",
+    "executionTime": "53",
+    "90percentile": "0",
+    "invocations": 500,
+    "average": "0"
+  }
+]

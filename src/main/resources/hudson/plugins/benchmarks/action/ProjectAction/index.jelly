@@ -1,0 +1,21 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler"
+         xmlns:l="/lib/layout">
+    <l:layout css="/plugin/benchmarks/css/style.css">
+        <st:include it="${it.project}" page="sidepanel.jelly"/>
+        <l:main-panel>
+            <h1 class="bhead">Benchmarks</h1>
+
+            <j:forEach var="report" items="${it.reports}">
+                <div class="report">
+                    <h2>${report.key}
+                        <span>(<a href="view?key=${report.key}">separately</a>)
+                        </span>
+                    </h2>
+                    <div class="chart" data="${report.key}"></div>
+                </div>
+            </j:forEach>
+            <script src="/plugin/benchmarks/js/d3.v2.min.js" type="text/javascript"/>
+            <script type="text/javascript" src="/plugin/benchmarks/js/index.js"></script>
+        </l:main-panel>
+    </l:layout>
+</j:jelly>

@@ -1,60 +1,76 @@
-table.source {
-    border-style: solid;
-    border-color: #bbb;
-    border-spacing: 0;
-    border-collapse: collapse;
-    width: 100%;
+.report {
+    border: 1px solid #bbb;
+    margin-top: -1px;
 }
 
-table.source td {
-    text-align: right;
-    white-space: nowrap;
+.report h2{
+    background: #F0F0F0;
+    margin: 0px;
+    padding: 5px 10px;
+    border-bottom: 1px solid #bbb;
+    position: relative;
 }
 
-table.source td.left {
-    text-align: left;
+.report h2 span{
+    font-size: 11px;
+    position: absolute;
+    right: 10px;
+    top: 9px;
 }
 
-table.source td.center {
-    text-align: center;
+/*Charts*/
+.data-line {
+    stroke-width: 3;
+    fill: none;
+    stroke-dasharray: 0;
 }
 
-table.source td.right {
-    text-align: right;
+.data-point {
+    stroke-width: 2;
+    fill: #fff;
+    cursor: pointer;
 }
 
-table.source a {
-    text-decoration: none;
+path {
+    stroke: none;
+    fill: none;
 }
 
-table.source th {
-    padding-left: 0.5em;
-    font-weight: bold;
-    background-color: #f0f0f0;
-    white-space: nowrap;
+text {
+    font-family: Arial;
+    font-size: 8pt;
+    fill: #787878;
 }
 
-div.title {
-    background-color: #f0f0f0;
-    padding: 0px;
-    margin-top: 20px;
+line {
+    stroke: #bbb;
+    stroke-width: 0.5;
+    fill: none;
 }
 
-.bold {
-    font-weight: bold;
+.yTick line{
+    stroke-dasharray: 5 3;
 }
 
-.nwrap {
-    white-space: nowrap;
+.xTick line{
+    stroke: #6E6E6E;
 }
 
-.red, table.source .red a {
-    color: red;
+
+
+.legend-entry{
+    cursor: pointer;
 }
 
-.trend {
-    margin-right: 40px;
-    border: solid 1px #d1d1d1;
-    margin-bottom: 20px;
+#chart {
+    margin: 0;
+}
+
+#tt b{
+    margin-right: 5px;
+}
+
+#tt .main{
+    color: #4571af;
 }
 

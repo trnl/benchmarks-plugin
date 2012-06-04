@@ -1,0 +1,12 @@
+[
+  {
+    "min": "0",
+    "median": "0",
+    "title": "com.mongodb.performance.bson2.Suite.generateObjectId",
+    "max": "0",
+    "executionTime": "17",
+    "90percentile": "0",
+    "invocations": 2000,
+    "average": "0"
+  }
+]
