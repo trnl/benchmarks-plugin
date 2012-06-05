@@ -39,7 +39,7 @@ public final class ProjectAction implements Action {
     }
 
     //index.jelly
-    public Collection<Report> getReports(){
+    public Collection<Report> getReports() {
         Set<Report> set = new HashSet<Report>();
         for (Object o : getProject().getBuilds()) {
             AbstractBuild<?, ?> build = (AbstractBuild<?, ?>) o;
@@ -52,28 +52,7 @@ public final class ProjectAction implements Action {
     }
 
 
-
     //json
-    public void doListReports(StaplerRequest request, StaplerResponse response) throws IOException {
-
-        List list = new ArrayList();
-
-        for (Object o : getProject().getBuilds()) {
-            AbstractBuild<?, ?> build = (AbstractBuild<?, ?>) o;
-            BuildAction action = build.getAction(BuildAction.class);
-            if (action != null && action.getReports() != null && action.getReports().size() > 0) {
-                HashMap<String, Object> map = new HashMap<String, Object>();
-                map.put("build", build.getDisplayName());
-                map.put("reports", action.getReports());
-                list.add(map);
-            }
-        }
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        response.getWriter().write(gson.toJson(list));
-    }
-
-
-
     public void doGetReport(StaplerRequest request, StaplerResponse response) throws IOException {
         String key = request.getParameter("key");
         if (StringUtils.isBlank(key)) return;
@@ -91,6 +70,35 @@ public final class ProjectAction implements Action {
                 HashMap<String, Object> map = new HashMap<String, Object>();
                 map.put("build", build.getDisplayName());
                 map.put("benchmarks", r.getBenchmarks());
+                list.add(map);
+            }
+        }
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        response.getWriter().write(gson.toJson(list));
+    }
+
+    public void doGetAll(StaplerRequest request, StaplerResponse response) throws IOException {
+        List<?> builds = getProject().getBuilds();
+        List list = new ArrayList();
+
+        Collections.reverse(builds);
+
+        for (Object o : builds) {
+            AbstractBuild<?, ?> build = (AbstractBuild<?, ?>) o;
+            BuildAction action = build.getAction(BuildAction.class);
+            if (action != null && action.getReports() != null && action.getReports() != null) {
+                int count = 0;
+                double sum = 0;
+                for (Report r : action.getReports()) {
+                    count += r.getBenchmarks().size();
+                    for (Benchmark b : r.getBenchmarks()) {
+                        sum += b.getAverage();
+                    }
+                }
+                HashMap<String, Object> map = new HashMap<String, Object>();
+                map.put("build", build.getDisplayName());
+                map.put("count", count);
+                map.put("sum", sum);
                 list.add(map);
             }
         }

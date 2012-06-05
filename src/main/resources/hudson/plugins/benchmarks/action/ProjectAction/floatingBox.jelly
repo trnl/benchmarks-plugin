@@ -1,6 +1,10 @@
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt" xmlns:local="local"  xmlns:my="myTagLib" >
-    <div class="test-trend-caption">Benchmarks</div>
-    <div>
-      <a href="benchmarks/"></a>
+<j:jelly xmlns:j="jelly:core">
+    <div align="right">
+        <div class="test-trend-caption">Benchmarks</div>
+        <div id="f-benchmarks-chart">
+            <link rel="stylesheet" type="text/css" href="/plugin/benchmarks/css/style.css"/>
+            <script src="/plugin/benchmarks/js/d3.v2.min.js" type="text/javascript"/>
+            <script type="text/javascript" src="/plugin/benchmarks/js/floatingBox.js"></script>
+        </div>
     </div>
 </j:jelly>

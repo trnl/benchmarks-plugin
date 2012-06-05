@@ -1,87 +1,81 @@
 var color = d3.scale.category20(),
-    margin = 40;
-
-var w = d3.select('#main-panel').property('clientWidth') - margin * 3.5,
-    h = 470;
+    margin = 40,
+    w = d3.select('#main-panel').property('clientWidth') - margin * 2.5,
+    h = 450;
 
 function drawChart() {
     var e = d3.select(this);
-
-    var svg = e.select('svg').select('g');
-    if (svg.empty()) {
-        svg = e
-            .append('svg:svg')
-            .attr('class', 'viz')
-            .append('svg:g')
-            .attr('width', w)
-            .attr('height', h)
-            .attr('transform', 'translate(' + margin * 1.5 + ',' + margin * 0.5 + ')');
-    }
-
     d3.json('getReport?key=' + e.attr('data'), function (data) {
+
         var builds = data.map(function (e) {
             return e.build
         });
 
+        // min & max
         var max = d3.max(data, function (d) {
             return d3.max(d.benchmarks, function (b) {
                 return b.average;
             });
         });
-
         var min = 0;
-        var x = d3.scale
-            .ordinal()
+
+        // scales
+        var x = d3.scale.ordinal()
             .domain(builds)
             .rangePoints([0, w]);
+        var y = d3.scale.linear()
+            .range([h, 0])
+            .domain([min, max]);
 
-        var y = d3.scale.linear().range([h - margin * 2, 0]).domain([min, max]);
+        // axes
+        var yAxis = d3.svg.axis()
+            .scale(y)
+            .orient('left')
+            .tickSize(-w)
+            .tickPadding(15);
+        var xAxis = d3.svg.axis()
+            .scale(x)
+            .tickSize(h)
+            .tickPadding(15);
 
-        var yAxis = d3.svg.axis().scale(y).orient('left').tickSize(-w).tickPadding(15);
-        var xAxis = d3.svg.axis().scale(x).tickSize(-h + margin * 2).tickPadding(15);
+        // svg elements and styles
+        var g = e
+            .append('svg:svg')
+            .append('g')
+            .attr('transform', 'translate(' + margin * 1.5 + ',' + margin * 0.5 + ')');
 
-
-//        y ticks and labels
-        var yTick = svg.append('svg:g')
+        // y ticks and labels
+        var yTick = g.append('svg:g')
             .attr('class', 'yTick')
             .call(yAxis);
+        var xTick = g.append('svg:g')
+            .attr('class', 'xTick')
+            .call(xAxis);
 
-//        console.log(yTick.node().getBoundingClientRect());
-//        yTick
-//            .append('text')
-//            .text('seconds')
-//            .attr('text-anchor', 'middle')
-//            .attr('transform', 'rotate(270) translate(-200,' + (-yTick.node().getBoundingClientRect().width) + ')')
-//        ;
-
-        //   x ticks and labels
-        var xTick = svg.append('svg:g')
-            .attr('class', 'xTick');
-
-        xTick.attr("transform", "translate(0," + (h - margin * 2) + ")")
-            .call(xAxis)
-            .selectAll("text")
-            .attr("transform", "rotate(-90),translate(-10,-20)")
+        // rotate x labels
+        xTick.selectAll("text")
+            .attr("transform", function (d) {
+                return "rotate(-90 " + 0 + " " + d3.select(this).attr('y') + "),translate(0, -4)"
+            })
             .attr('text-anchor', 'end');
 
+        // lines group
+        var lines = g.append('svg:g')
+            .attr('class', 'lines');
 
+
+        //data work
         var benchmarks = d3.merge(data.map(function (b) {
             b.benchmarks.forEach(function (e) {
                 e.build = b.build
             });
             return b.benchmarks;
         }));
-
-
         var nest = d3.nest()
             .key(function (i) {
                 return i.title
             })
             .entries(benchmarks);
-
-        var lines = svg.append('svg:g')
-            .attr('class', 'lines');
-
 
         nest.forEach(function (object) {
             var line = lines.append('svg:g')
@@ -145,12 +139,10 @@ function drawChart() {
         });
 
 
-        var legend = svg
-            .append('svg:g')
+        var legend = g.append('svg:g')
             .attr('class', 'legend')
             .attr('transform', "translate(0," + (xTick.node().getBoundingClientRect().height + margin / 2) + ")");
 
-        var pos = 0;
 
         var entry = legend
             .selectAll('.legend-entry')
@@ -240,8 +232,4 @@ function drawChart() {
 
 }
 
-function draw() {
-    d3.selectAll('.chart').each(drawChart);
-}
-
-draw();
+d3.selectAll('.chart').each(drawChart);

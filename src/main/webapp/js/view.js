@@ -1,18 +1,18 @@
 var color = d3.scale.category20(),
-    margin = 40;
-
-var w = d3.select('#main-panel').property('clientWidth') - margin - 20,
-    h = 470;
+    margin = 40,
+    w = d3.select('#main-panel').property('clientWidth') - margin * 2.5,
+    h = 450;
 
 
 d3.json('getReport?key=' + d3.select('.report-title').text(), function (data) {
+
+
     var benchmarks = d3.merge(data.map(function (b) {
         b.benchmarks.forEach(function (e) {
             e.build = b.build
         });
         return b.benchmarks;
     }));
-
 
     var nest = d3.nest()
         .key(function (i) {
@@ -31,13 +31,10 @@ d3.json('getReport?key=' + d3.select('.report-title').text(), function (data) {
             .append('div')
             .classed('chart');
 
-
-        var svg = report
+        var g = report
             .append('svg:svg')
-            .attr('width', w)
             .attr('height', h)
-            .attr('class', 'viz')
-            .append('svg:g')
+            .append('g')
             .attr('transform', 'translate(' + margin * 1.5 + ',' + margin * 0.5 + ')');
 
 
@@ -57,35 +54,30 @@ d3.json('getReport?key=' + d3.select('.report-title').text(), function (data) {
         var x = d3.scale
             .ordinal()
             .domain(builds)
-            .rangePoints([0, w - margin * 2]);
+            .rangePoints([0, w]);
 
-        var y = d3.scale.linear().range([h - margin * 2, 0]).domain([min, max]);
+        var y = d3.scale.linear().range([h, 0]).domain([min, max]);
 
-        var yAxis = d3.svg.axis().scale(y).orient('left').tickSize(-w + margin * 2).tickPadding(15);
-        var xAxis = d3.svg.axis().scale(x).tickSize(-h + margin * 2).tickPadding(15);
+        var yAxis = d3.svg.axis().scale(y).orient('left').tickSize(-w).tickPadding(15);
+        var xAxis = d3.svg.axis().scale(x).tickSize(h).tickPadding(15);
 
 
-//        y ticks and labels
-        svg.append('svg:g')
+        // y ticks and labels
+        var yTick = g.append('svg:g')
             .attr('class', 'yTick')
-            .call(yAxis)
-            .append('text');
-//            .text('ms')
-//            .attr('text-anchor', 'middle')
-//            .attr('transform','rotate(270) translate(-390,-40)');
+            .call(yAxis);
+        var xTick = g.append('svg:g')
+            .attr('class', 'xTick')
+            .call(xAxis);
 
-        //   x ticks and labels
-        //   x ticks and labels
-        var xTick = svg.append('svg:g')
-            .attr('class', 'xTick');
-
-        xTick.attr("transform", "translate(0," + (h - margin * 2) + ")")
-            .call(xAxis)
-            .selectAll("text")
-            .attr("transform", "rotate(-90),translate(-10,-20)")
+        // rotate x labels
+        xTick.selectAll("text")
+            .attr("transform", function (d) {
+                return "rotate(-90 " + 0 + " " + d3.select(this).attr('y') + "),translate(0, -4)"
+            })
             .attr('text-anchor', 'end');
 
-        var chart = svg.append('svg:g')
+        var chart = g.append('svg:g')
             .attr('class', 'line')
             .attr('key', benchmark.key);
 
@@ -115,7 +107,7 @@ d3.json('getReport?key=' + d3.select('.report-title').text(), function (data) {
                 return x(d.build);
             })
             .y0(function (d) {
-                return d.min ? y(d.min) : h - margin * 2;
+                return d.min ? y(d.min) : h;
             })
             .y1(function (d) {
                 return y(d.max);
@@ -165,6 +157,17 @@ d3.json('getReport?key=' + d3.select('.report-title').text(), function (data) {
             .attr('cx', function (d) {
                 return x(d.build)
             })
+            .attr('tooltip', function (d) {
+                var text = "";
+                text += "<div class='main'><b>Average:</b>" + d.average + "</div>";
+                text += "<div><b>Min:</b>" + d.min + "</div>";
+                text += "<div><b>Max:</b>" + d.max + "</div>";
+                text += "<div><b>Median:</b>" + d.median + "</div>";
+                text += "<div><b>90%:</b>" + d['90percentile'] + "</div>";
+                text += "<div><b>Execution time:</b>" + d.executionTime + "</div>";
+                text += "<div><b>Invocations:</b>" + d.invocations + "</div>";
+                return text;
+            })
 
             .style('stroke', color(benchmark.key))
             .attr('cy', function (d) {
@@ -178,6 +181,9 @@ d3.json('getReport?key=' + d3.select('.report-title').text(), function (data) {
             .on('mouseout', function () {
                 d3.select(this).transition().style('fill', '#fff');
             });
+
+        report.select('svg')
+            .attr('height', xTick.node().getBoundingClientRect().height + margin)
 
     });
 

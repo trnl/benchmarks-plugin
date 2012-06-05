@@ -74,3 +74,6 @@ line {
     color: #4571af;
 }
 
+#f-benchmarks-chart *{
+    font-size: 10px;
+}

@@ -45,6 +45,7 @@ public class ReportRecorder extends Recorder {
 
     private String glob;
 
+
     @DataBoundConstructor
     public ReportRecorder(String glob) {
         this.glob = glob;
