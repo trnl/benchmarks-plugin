@@ -31,7 +31,7 @@ public final class ProjectAction implements Action {
     }
 
     public String getIconFileName() {
-        return "/plugin/benchmarks/img/chart.png";
+        return hasReports() ? "/plugin/benchmarks/img/chart.png" : null;
     }
 
     public String getUrlName() {
@@ -49,6 +49,12 @@ public final class ProjectAction implements Action {
             }
         }
         return set;
+    }
+
+    // floatingBox.jelly
+    public boolean hasReports() {
+        Collection<Report> r = getReports();
+        return (r != null && !r.isEmpty());
     }
 
 

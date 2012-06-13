@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 public class ReportRecorder extends Recorder {
 
@@ -45,7 +46,6 @@ public class ReportRecorder extends Recorder {
 
     private String glob;
 
-
     @DataBoundConstructor
     public ReportRecorder(String glob) {
         this.glob = glob;
@@ -60,8 +60,8 @@ public class ReportRecorder extends Recorder {
     }
 
     @Override
-    public Action getProjectAction(AbstractProject<?, ?> project) {
-        return new ProjectAction(project);
+    public Collection<? extends Action> getProjectActions(AbstractProject<?, ?> project) {
+        return Arrays.asList(new ProjectAction(project));
     }
 
     public BuildStepMonitor getRequiredMonitorService() {

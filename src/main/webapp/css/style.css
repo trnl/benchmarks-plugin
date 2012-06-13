@@ -1,6 +1,7 @@
 .report {
     border: 1px solid #bbb;
     margin-top: -1px;
+    min-height: 450px;
 }
 
 .report h2{

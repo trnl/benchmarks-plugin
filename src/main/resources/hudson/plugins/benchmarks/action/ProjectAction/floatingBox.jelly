@@ -1,10 +1,12 @@
 <j:jelly xmlns:j="jelly:core">
+    <j:if test="${from.hasReports()}">
     <div align="right">
-        <div class="test-trend-caption">Benchmarks</div>
+        <div class="test-trend-caption">Benchmarks Summary Trend</div>
         <div id="f-benchmarks-chart">
             <link rel="stylesheet" type="text/css" href="/plugin/benchmarks/css/style.css"/>
             <script src="/plugin/benchmarks/js/d3.v2.min.js" type="text/javascript"/>
             <script type="text/javascript" src="/plugin/benchmarks/js/floatingBox.js"></script>
         </div>
     </div>
+    </j:if>
 </j:jelly>

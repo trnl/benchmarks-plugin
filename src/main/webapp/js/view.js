@@ -1,7 +1,5 @@
 var color = d3.scale.category20(),
-    margin = 40,
-    w = d3.select('#main-panel').property('clientWidth') - margin * 2.5,
-    h = 450;
+    margin = 40;
 
 
 d3.json('getReport?key=' + d3.select('.report-title').text(), function (data) {
@@ -19,6 +17,11 @@ d3.json('getReport?key=' + d3.select('.report-title').text(), function (data) {
             return i.title
         })
         .entries(benchmarks);
+
+    var h = 450;
+    d3.select('#main-panel').style('height', nest.length * h + 'px');
+    var w = d3.select('#main-panel').property('clientWidth') - margin * 2.5;
+
 
     nest.forEach(function (benchmark) {
         var report = d3.select('#main-panel')

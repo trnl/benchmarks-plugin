@@ -33,7 +33,8 @@ function drawChart() {
             .scale(y)
             .orient('left')
             .tickSize(-450)
-            .tickPadding(5);
+            .tickPadding(5)
+            .tickFormat(d3.format('d'));
         var xAxis = d3.svg.axis()
             .scale(x)
             .tickSize(159)
@@ -84,6 +85,9 @@ function drawChart() {
 
         e.select('svg')
             .attr('height', xTick.node().getBoundingClientRect().height + margin)
+
+        e.select('svg')
+            .attr('width', yTick.node().getBoundingClientRect().width + margin)
     });
 
 
