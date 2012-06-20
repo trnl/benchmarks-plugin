@@ -1,5 +1,28 @@
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
-  <f:entry title="Benchmarks report" field="glob">
-      <f:textbox />
-  </f:entry>
+    <f:entry title="Benchmarks report:" field="glob">
+        <f:textbox/>
+    </f:entry>
+
+    <f:entry title="Benchmarks thresholds:">
+        <table width="250px">
+            <tr>
+                <td>
+                    <img src="${rootURL}/images/16x16/yellow.gif" alt="100%"/>
+                    Unstable
+                </td>
+                <td>
+                    <f:textbox field="unstableThreshold"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <img src="${rootURL}/images/16x16/red.gif" alt="100%"/>
+                    Failed
+                </td>
+                <td>
+                    <f:textbox field="failureThreshold"/>
+                </td>
+            </tr>
+        </table>
+    </f:entry>
 </j:jelly>

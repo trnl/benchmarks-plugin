@@ -34,7 +34,10 @@ function drawChart() {
             .orient('left')
             .tickSize(-450)
             .tickPadding(5)
-            .tickFormat(d3.format('d'));
+            .tickFormat(function (d) {
+                var k = d3.format('d')(d);
+                return k ? k + 's' : '';
+            });
         var xAxis = d3.svg.axis()
             .scale(x)
             .tickSize(159)

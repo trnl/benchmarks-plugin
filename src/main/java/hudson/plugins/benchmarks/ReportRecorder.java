@@ -3,10 +3,7 @@ package hudson.plugins.benchmarks;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
-import hudson.model.AbstractBuild;
-import hudson.model.AbstractProject;
-import hudson.model.Action;
-import hudson.model.BuildListener;
+import hudson.model.*;
 import hudson.plugins.benchmarks.action.BuildAction;
 import hudson.plugins.benchmarks.action.ProjectAction;
 import hudson.plugins.benchmarks.model.Report;
@@ -21,7 +18,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 
 public class ReportRecorder extends Recorder {
 
@@ -45,6 +41,24 @@ public class ReportRecorder extends Recorder {
     }
 
     private String glob;
+    private int failureThreshold = 20;
+    private int unstableThreshold = 10;
+
+    public int getUnstableThreshold() {
+        return unstableThreshold;
+    }
+
+    public void setUnstableThreshold(int unstableThreshold) {
+        this.unstableThreshold = unstableThreshold;
+    }
+
+    public int getFailureThreshold() {
+        return failureThreshold;
+    }
+
+    public void setFailureThreshold(int failureThreshold) {
+        this.failureThreshold = failureThreshold;
+    }
 
     @DataBoundConstructor
     public ReportRecorder(String glob) {
@@ -83,8 +97,33 @@ public class ReportRecorder extends Recorder {
         ReportParser parser = new JSONParser();
         Collection<Report> reports = parser.parse(Arrays.asList(files), listener);
 
-        BuildAction a = new BuildAction(build,reports);
+        BuildAction a = new BuildAction(build, reports);
         build.addAction(a);
+
+
+        Result result = Result.SUCCESS;
+        // mark the build as unstable or failure depending on the outcome.
+        for (Report currentReport : reports) {
+            //get prev build
+            BuildAction prevAction = build.getPreviousBuild().getAction(BuildAction.class);
+            if (prevAction != null && prevAction.getReport(currentReport.getKey()) != null) {
+                Report prevReport = prevAction.getReport(currentReport.getKey());
+                for (String name : currentReport.getNames()) {
+                    double prev = prevReport.get(name).getAverage();
+                    double curr = currentReport.get(name).getAverage();
+                    if (prev > 0 && (curr / prev - 1) * 100 > unstableThreshold) result = Result.UNSTABLE;
+                    if (prev > 0 && (curr / prev - 1) * 100 > failureThreshold) result = Result.FAILURE;
+                }
+            }
+            if (result.isWorseThan(build.getResult())) {
+                build.setResult(result);
+            }
+            logger.println("Benchmarks: "
+                    + currentReport.getKey()
+                    + ". Build status is: "
+                    + build.getResult());
+        }
+
 
         //TODO thresholds
 

@@ -20,7 +20,8 @@ d3.json('getReport?key=' + d3.select('.report-title').text(), function (data) {
 
     var h = 450;
     d3.select('#main-panel').style('height', nest.length * h + 'px');
-    var w = d3.select('#main-panel').property('clientWidth') - margin * 2.5;
+//    var w = d3.select('#main-panel').property('clientWidth') - margin * 2.5;
+    var w = 900;
 
 
     nest.forEach(function (benchmark) {
@@ -37,6 +38,7 @@ d3.json('getReport?key=' + d3.select('.report-title').text(), function (data) {
         var g = report
             .append('svg:svg')
             .attr('height', h)
+            .attr('width',w + margin*2)
             .append('g')
             .attr('transform', 'translate(' + margin * 1.5 + ',' + margin * 0.5 + ')');
 
@@ -61,7 +63,9 @@ d3.json('getReport?key=' + d3.select('.report-title').text(), function (data) {
 
         var y = d3.scale.linear().range([h, 0]).domain([min, max]);
 
-        var yAxis = d3.svg.axis().scale(y).orient('left').tickSize(-w).tickPadding(15);
+        var yAxis = d3.svg.axis().scale(y).orient('left').tickSize(-w).tickPadding(15).tickFormat(function(d){
+            return d + 's';
+        });
         var xAxis = d3.svg.axis().scale(x).tickSize(h).tickPadding(15);
 
 
@@ -103,6 +107,15 @@ d3.json('getReport?key=' + d3.select('.report-title').text(), function (data) {
             })
             .interpolate("linear");
 
+        var median = d3.svg.line()
+            .x(function (d) {
+                return x(d.build)
+            })
+            .y(function (d) {
+                return y(d['median']);
+            })
+            .interpolate("linear");
+
 
         var area = d3.svg.area()
             .interpolate("linear")
@@ -134,9 +147,21 @@ d3.json('getReport?key=' + d3.select('.report-title').text(), function (data) {
             .append('path')
             .attr('class', 'data-90')
             .style('stroke', color(benchmark.key))
-            .style('stroke-dasharray', '8 4')
+            .style('stroke-dasharray', '7 3')
             .style('stroke-width', 2)
             .attr("d", percentile90(benchmark.values));
+
+
+        chart
+            .selectAll('.data-median')
+            .data([benchmark.values])
+            .enter()
+            .append('path')
+            .attr('class', 'data-median')
+            .style('stroke', color(benchmark.key))
+            .style('stroke-dasharray', '2 2')
+            .style('stroke-width', 2)
+            .attr("d", median(benchmark.values));
 
         // Draw the area
 
@@ -185,8 +210,58 @@ d3.json('getReport?key=' + d3.select('.report-title').text(), function (data) {
                 d3.select(this).transition().style('fill', '#fff');
             });
 
+        var legend = g.append('svg:g')
+            .attr('class', 'legend')
+            .attr('transform', "translate(0," + (xTick.node().getBoundingClientRect().height + margin / 2) + ")");
+
+        var entry = legend
+            .selectAll('.legend-entry')
+            .data(['average','median','90%'])
+            .enter()
+            .append('svg:g')
+            .attr('class', 'legend-entry');
+
+        entry
+            .append('line')
+            .attr("x1", 0)
+            .attr("y1", 0)
+            .attr("x2", 15)
+            .attr("y2", 0)
+            .style('stroke-width', 2)
+            .style('stroke-dasharray', function(d){
+                if (d=='median') return '2 2';
+                if (d=='90%') return '7 3';
+            })
+            .style('stroke', color(benchmark.key))
+
+
+        entry
+            .append('text')
+            .text(function (d) {
+                return d;
+            })
+            .attr('text-anchor', 'start')
+            .attr('dy', '.32em')
+            .attr('dx', '17');
+
+        var ypos = 0,
+            xpos = 0;
+
+        // Align labels
+        entry
+            .attr('transform', function (d) {
+                var length = d3.select(this).select('text').node().getComputedTextLength() + 30;
+                if (w < xpos + length) {
+                    xpos = 0;
+                    ypos += 30;
+                }
+                var t = 'translate(' + xpos + ',' + ypos + ')';
+                xpos += length
+                return t;
+            });
+
         report.select('svg')
-            .attr('height', xTick.node().getBoundingClientRect().height + margin)
+            .attr('height', xTick.node().getBoundingClientRect().height + legend.node().getBoundingClientRect().height + margin + 10)
 
     });
 

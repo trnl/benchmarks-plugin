@@ -1,6 +1,7 @@
 var color = d3.scale.category20(),
     margin = 40,
-    w = d3.select('#main-panel').property('clientWidth') - margin * 2.5,
+//    w = d3.select('#main-panel').property('clientWidth') - margin * 2.5,
+    w = 900,
     h = 450;
 
 function drawChart() {
@@ -32,6 +33,9 @@ function drawChart() {
             .scale(y)
             .orient('left')
             .tickSize(-w)
+            .tickFormat(function(d){
+                return d + 's';
+            })
             .tickPadding(15);
         var xAxis = d3.svg.axis()
             .scale(x)
@@ -41,6 +45,7 @@ function drawChart() {
         // svg elements and styles
         var g = e
             .append('svg:svg')
+            .attr('width',w + margin *2)
             .append('g')
             .attr('transform', 'translate(' + margin * 1.5 + ',' + margin * 0.5 + ')');
 

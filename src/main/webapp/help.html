@@ -1,15 +1,25 @@
-<div>This plugin understands the <a
-	href="http://jakarta.apache.org/jmeter/">JMeter</a> analysis report XML
-format and the <a href="http://www.soapui.org/"> SOAPUI report in
-JUnit format</a>. <br/>
-This plug-in does not perform the actual analysis; it only
-displays useful information about analysis results, such as average
-responding time, historical result trend, web UI for viewing analysis
-map, and so on.
-
+<div>This plugin understands the JSON Benchmark reports. This plug-in only displays useful information about results, such as average time, 90% percentile, median, historical result trend.
 <p>
-To use this feature, first set up your build to run tests, then select the adequate parser for your tests (JMeter or JUnit) and finally
-you have to specify the path to the different performance XML files, by default the plugin will use the <tt>**/*.jtl</tt> pattern for
-JMeter, and <tt>**/TEST*.xml</tt> for JUnit tests.
+To use this plugin, first set up your build to run benchmarks. You can use tools such as <a href="https://github.com/litvinok/phplame">PHPLame</a>.
+Then you have to specify the path to the different benchmark reports, by default the plugin will use the <tt>**/*-REPORT.json</tt> pattern.
 </p>
+
+
+Example of the format:
+<div style="font-family: monospace;background: #ffffe0">
+<pre>
+[
+  {
+    "min": "0",
+    "median": "0",
+    "title": "com.mongodb.performance.bson.Generate.generateObjectId",
+    "max": "0.029",
+    "executionTime": "19.123",
+    "90percentile": "0",
+    "invocations": 2000000.0,
+    "average": "0.0000045715"
+  }
+]
+</pre>
+    </div>
 </div>
