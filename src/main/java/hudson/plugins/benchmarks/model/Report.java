@@ -1,7 +1,5 @@
 package hudson.plugins.benchmarks.model;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
@@ -10,28 +8,28 @@ import java.util.Map;
 public class Report implements Serializable {
 
     private String key = null;
-    private Map<String, Benchmark> benchmarks = new HashMap<String, Benchmark>();
+    private Map<String, BenchmarkResult> benchmarks = new HashMap<String, BenchmarkResult>();
 
-    public Report(String key, Collection<Benchmark> benchmarks) {
+    public Report(String key, Collection<BenchmarkResult> results) {
         this.key = key;
-        for (Benchmark b : benchmarks) {
-            addBenchmark(b);
+        for (BenchmarkResult b : results) {
+            addBenchmarkResult(b);
         }
     }
 
-    public void addBenchmark(Benchmark benchmark) {
-        benchmarks.put(benchmark.getTitle(), benchmark);
+    public void addBenchmarkResult(BenchmarkResult result) {
+        benchmarks.put(result.get("title").toString(), result);
     }
 
     public String getKey() {
         return key;
     }
 
-    public Collection<Benchmark> getBenchmarks() {
+    public Collection<BenchmarkResult> getBenchmarkResults() {
         return benchmarks.values();
     }
 
-    public Benchmark get(String name) {
+    public BenchmarkResult get(String name) {
         return benchmarks.get(name);
     }
 

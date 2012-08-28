@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import hudson.FilePath;
 import hudson.model.TaskListener;
-import hudson.plugins.benchmarks.model.Benchmark;
+import hudson.plugins.benchmarks.model.BenchmarkResult;
 import hudson.plugins.benchmarks.model.Report;
 
 import java.io.IOException;
@@ -26,13 +26,13 @@ public class JSONParser extends ReportParser {
         PrintStream logger = listener.getLogger();
         Collection<Report> reports = new ArrayList<Report>();
         Gson gson = new Gson();
-        Type listType = new TypeToken<List<Benchmark>>() {
+        Type listType = new TypeToken<List<BenchmarkResult>>() {
         }.getType();
 
         for (FilePath f : files) {
-            logger.printf("Benchmarks: Parsing %s.........", f.getName());
+            logger.printf("Parsing %s.........", f.getName());
             try {
-                List<Benchmark> list = gson.fromJson(new InputStreamReader(f.read()), listType);
+                List<BenchmarkResult> list = gson.fromJson(new InputStreamReader(f.read()), listType);
                 reports.add(new Report(f.getName(), list));
                 logger.print("SUCCESS\n");
             } catch (Exception e) {

@@ -4,7 +4,7 @@
         <l:breadcrumb title="${request.getParameter('key')}"/>
         <st:include it="${it.project}" page="sidepanel.jelly"/>
         <l:main-panel>
-            <h1>Benchmarks:
+            <h1>Report:
                 <span class="report-title">${request.getParameter('key')}</span>
             </h1>
             <script src="/plugin/benchmarks/js/d3.v2.min.js" type="text/javascript"/>

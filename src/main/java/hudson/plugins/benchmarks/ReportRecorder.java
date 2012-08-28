@@ -43,6 +43,7 @@ public class ReportRecorder extends Recorder {
     private String glob;
     private int failureThreshold = 20;
     private int unstableThreshold = 10;
+    private String fieldsToVisualize = "average operationsPerSecond";
 
     public int getUnstableThreshold() {
         return unstableThreshold;
@@ -60,9 +61,21 @@ public class ReportRecorder extends Recorder {
         this.failureThreshold = failureThreshold;
     }
 
+    public String getFieldsToVisualize() {
+        return fieldsToVisualize;
+    }
+
+    public void setFieldsToVisualize(String fieldsToVisualize) {
+        this.fieldsToVisualize = fieldsToVisualize;
+    }
+
     @DataBoundConstructor
-    public ReportRecorder(String glob) {
+
+    public ReportRecorder(String glob, int failureThreshold, int unstableThreshold, String fieldsToVisualize) {
         this.glob = glob;
+        this.failureThreshold = failureThreshold;
+        this.unstableThreshold = unstableThreshold;
+        this.fieldsToVisualize = fieldsToVisualize;
     }
 
     public String getGlob() {
@@ -75,7 +88,7 @@ public class ReportRecorder extends Recorder {
 
     @Override
     public Collection<? extends Action> getProjectActions(AbstractProject<?, ?> project) {
-        return Arrays.asList(new ProjectAction(project));
+        return Arrays.asList(new ProjectAction(project, fieldsToVisualize));
     }
 
     public BuildStepMonitor getRequiredMonitorService() {
@@ -86,48 +99,61 @@ public class ReportRecorder extends Recorder {
     public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
             throws InterruptedException, IOException {
         PrintStream logger = listener.getLogger();
-
-        logger.println("Benchmarks: Recording reports '" + glob + "'");
+        logger.println("\n-------------------------------------------------------");
+        logger.println("BENCHMARKS PLUGIN");
+        logger.println("-------------------------------------------------------");
+        logger.printf("Parsing reports matching '%s' pattern.%n", glob);
         FilePath[] files = build.getWorkspace().list(glob);
 
         if (files.length == 0) {
-            logger.println("Benchmarks: no files matching '" + glob + "' have been found.");
+            logger.printf("No reports matching '%s' pattern found.%n%n", glob);
+            return true;
         }
 
         ReportParser parser = new JSONParser();
         Collection<Report> reports = parser.parse(Arrays.asList(files), listener);
+        logger.println("Parsing finished.\n");
 
         BuildAction a = new BuildAction(build, reports);
         build.addAction(a);
 
-
-        Result result = Result.SUCCESS;
-        // mark the build as unstable or failure depending on the outcome.
-        for (Report currentReport : reports) {
-            //get prev build
-            BuildAction prevAction = build.getPreviousBuild().getAction(BuildAction.class);
-            if (prevAction != null && prevAction.getReport(currentReport.getKey()) != null) {
-                Report prevReport = prevAction.getReport(currentReport.getKey());
-                for (String name : currentReport.getNames()) {
-                    double prev = prevReport.get(name).getAverage();
-                    double curr = currentReport.get(name).getAverage();
-                    if (prev > 0 && (curr / prev - 1) * 100 > unstableThreshold) result = Result.UNSTABLE;
-                    if (prev > 0 && (curr / prev - 1) * 100 > failureThreshold) result = Result.FAILURE;
-                }
-            }
-            if (result.isWorseThan(build.getResult())) {
-                build.setResult(result);
-            }
-            logger.println("Benchmarks: "
-                    + currentReport.getKey()
-                    + ". Build status is: "
-                    + build.getResult());
-        }
-
-
-        //TODO thresholds
+        logger.println("Analysing changes.");
+        analyseChanges(build, logger, reports);
+        logger.printf("\nResult: %s.%n%n", build.getResult());
 
         return true;
+    }
+
+    private void analyseChanges(AbstractBuild<?, ?> build, PrintStream logger, Collection<Report> reports) {
+        Result result = Result.SUCCESS;
+        AbstractBuild<?, ?> previousBuild = build.getPreviousBuild();
+        BuildAction previousAction = null;
+        if (previousBuild != null && (previousAction = previousBuild.getAction(BuildAction.class)) != null) {
+            for (Report currentReport : reports) {
+                Report previousReport = null;
+                if ((previousReport = previousAction.getReport(currentReport.getKey())) != null) {
+                    for (String benchmarkName : currentReport.getNames()) {
+                        result = compareBenchmarks(benchmarkName, currentReport, previousReport, logger);
+                    }
+                }
+                if (result.isWorseThan(build.getResult())) {
+                    build.setResult(result);
+                }
+            }
+        }
+    }
+
+    private Result compareBenchmarks(String benchmarkName, Report currentReport, Report previousReport, PrintStream logger) {
+        Result result = Result.SUCCESS;
+        double previousAverage = (Double) previousReport.get(benchmarkName).get("average");
+        double currentAverage = (Double) currentReport.get(benchmarkName).get("average");
+        if (previousAverage > 0 && (currentAverage / previousAverage - 1) * 100 > unstableThreshold)
+            result = Result.UNSTABLE;
+        if (previousAverage > 0 && (currentAverage / previousAverage - 1) * 100 > failureThreshold)
+            result = Result.FAILURE;
+        if (result.isWorseThan(Result.SUCCESS))
+            logger.printf("%s: [result: %s, gain: %g%%]%n", benchmarkName, result, (currentAverage / previousAverage - 1) * 100);
+        return result;
     }
 
 }

@@ -8,12 +8,12 @@ function drawChart() {
     var e = d3.select(this);
     d3.json('getReport?key=' + e.attr('data'), function (data) {
 
-        var builds = data.map(function (e) {
+        var builds = data.report.map(function (e) {
             return e.build
         });
 
         // min & max
-        var max = d3.max(data, function (d) {
+        var max = d3.max(data.report, function (d) {
             return d3.max(d.benchmarks, function (b) {
                 return b.average;
             });
@@ -70,7 +70,7 @@ function drawChart() {
 
 
         //data work
-        var benchmarks = d3.merge(data.map(function (b) {
+        var benchmarks = d3.merge(data.report.map(function (b) {
             b.benchmarks.forEach(function (e) {
                 e.build = b.build
             });

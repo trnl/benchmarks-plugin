@@ -2,10 +2,11 @@ package hudson.plugins.benchmarks.action;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Action;
-import hudson.plugins.benchmarks.model.Benchmark;
+import hudson.plugins.benchmarks.model.BenchmarkResult;
 import hudson.plugins.benchmarks.model.Report;
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.StaplerRequest;
@@ -17,9 +18,11 @@ import java.util.*;
 public final class ProjectAction implements Action {
 
     public final AbstractProject<?, ?> project;
+    private String fieldsToVisualize;
 
-    public ProjectAction(AbstractProject project) {
+    public ProjectAction(AbstractProject project, String fieldsToVisualize) {
         this.project = project;
+        this.fieldsToVisualize = fieldsToVisualize;
     }
 
     public AbstractProject<?, ?> getProject() {
@@ -75,12 +78,17 @@ public final class ProjectAction implements Action {
                 Report r = action.getReport(key);
                 HashMap<String, Object> map = new HashMap<String, Object>();
                 map.put("build", build.getDisplayName());
-                map.put("benchmarks", r.getBenchmarks());
+                map.put("benchmarks", r.getBenchmarkResults());
                 list.add(map);
             }
         }
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        response.getWriter().write(gson.toJson(list));
+
+        Map<String,Object> r = new HashMap<String, Object>();
+        r.put("fieldsToVisualize", StringUtils.split(fieldsToVisualize," ,"));
+        r.put("report", list);
+
+        Gson gson = new GsonBuilder().create();
+        response.getWriter().write(gson.toJson(r));
     }
 
     public void doGetAll(StaplerRequest request, StaplerResponse response) throws IOException {
@@ -96,9 +104,9 @@ public final class ProjectAction implements Action {
                 int count = 0;
                 double sum = 0;
                 for (Report r : action.getReports()) {
-                    count += r.getBenchmarks().size();
-                    for (Benchmark b : r.getBenchmarks()) {
-                        sum += b.getAverage();
+                    count += r.getBenchmarkResults().size();
+                    for (BenchmarkResult b : r.getBenchmarkResults()) {
+                        sum += (Double) b.get("average");
                     }
                 }
                 HashMap<String, Object> map = new HashMap<String, Object>();
@@ -108,7 +116,7 @@ public final class ProjectAction implements Action {
                 list.add(map);
             }
         }
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Gson gson = new GsonBuilder().create();
         response.getWriter().write(gson.toJson(list));
     }
 }
