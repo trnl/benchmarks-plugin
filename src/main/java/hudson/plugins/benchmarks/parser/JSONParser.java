@@ -26,8 +26,7 @@ public class JSONParser extends ReportParser {
         PrintStream logger = listener.getLogger();
         Collection<Report> reports = new ArrayList<Report>();
         Gson gson = new Gson();
-        Type listType = new TypeToken<List<BenchmarkResult>>() {
-        }.getType();
+        Type listType = new TypeToken<List<BenchmarkResult>>() {}.getType();
 
         for (FilePath f : files) {
             logger.printf("Parsing %s.........", f.getName());
