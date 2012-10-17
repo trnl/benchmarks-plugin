@@ -3,7 +3,7 @@
         <f:textbox/>
     </f:entry>
 
-    <f:entry title="Thresholds">
+    <f:entry title="Notifier">
         <table width="250px">
             <tr>
                 <td>
@@ -11,7 +11,7 @@
                     Unstable
                 </td>
                 <td>
-                    <f:textbox field="unstableThreshold"/>
+                    <f:textbox field="unstableThreshold" default="30"/>
                 </td>
             </tr>
             <tr>
@@ -20,13 +20,13 @@
                     Failed
                 </td>
                 <td>
-                    <f:textbox field="failureThreshold"/>
+                    <f:textbox field="failureThreshold" default="50"/>
                 </td>
             </tr>
         </table>
     </f:entry>
 
-    <f:entry title="Fields to visualize" field="fieldsToVisualize">
-        <f:textbox/>
+    <f:entry title="Additional fields to plot" field="fieldsToVisualize">
+        <f:textbox default="opsUser timeUser"/>
     </f:entry>
 </j:jelly>

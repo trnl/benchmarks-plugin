@@ -15,7 +15,7 @@ function drawChart() {
         // min & max
         var max = d3.max(data.report, function (d) {
             return d3.max(d.benchmarks, function (b) {
-                return b.average;
+                return b.opsUser;
             });
         });
         var min = 0;
@@ -33,8 +33,8 @@ function drawChart() {
             .scale(y)
             .orient('left')
             .tickSize(-w)
-            .tickFormat(function(d){
-                return d + 's';
+            .tickFormat(function (g) {
+                return d3.format(".3g")(g);
             })
             .tickPadding(15);
         var xAxis = d3.svg.axis()
@@ -92,7 +92,7 @@ function drawChart() {
                     return x(d.build)
                 })
                 .y(function (d) {
-                    return y(d.average)
+                    return y(d.opsUser)
                 })
                 .interpolate("linear");
 
@@ -116,7 +116,7 @@ function drawChart() {
                 .attr('class', 'data-point')
                 .attr('tooltip', function (d) {
                     var text = "";
-                    text += "<div class='main'><b>Average:</b>" + d.average + "</div>";
+                    text += "<div class='main'><b>opsUser:</b>" + d.opsUser + "</div>";
                     text += "<div><b>Min:</b>" + d.min + "</div>";
                     text += "<div><b>Max:</b>" + d.max + "</div>";
                     text += "<div><b>Median:</b>" + d.median + "</div>";
@@ -131,7 +131,7 @@ function drawChart() {
 
                 .style('stroke', color(object.key))
                 .attr('cy', function (d) {
-                    return y(d.average)
+                    return y(d.opsUser)
                 })
                 .attr('r', 4)
                 .on('mouseover', function (d) {

@@ -2,10 +2,10 @@ package hudson.plugins.benchmarks.action;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Action;
+import hudson.plugins.benchmarks.Constants;
 import hudson.plugins.benchmarks.model.BenchmarkResult;
 import hudson.plugins.benchmarks.model.Report;
 import org.apache.commons.lang.StringUtils;
@@ -106,7 +106,8 @@ public final class ProjectAction implements Action {
                 for (Report r : action.getReports()) {
                     count += r.getBenchmarkResults().size();
                     for (BenchmarkResult b : r.getBenchmarkResults()) {
-                        sum += (Double) b.get("average");
+                        if (b.containsKey(Constants.FIELD_TIME_USER))
+                        sum += (Double) b.get(Constants.FIELD_TIME_USER);
                     }
                 }
                 HashMap<String, Object> map = new HashMap<String, Object>();

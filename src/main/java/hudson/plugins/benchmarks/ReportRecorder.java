@@ -6,6 +6,7 @@ import hudson.Launcher;
 import hudson.model.*;
 import hudson.plugins.benchmarks.action.BuildAction;
 import hudson.plugins.benchmarks.action.ProjectAction;
+import hudson.plugins.benchmarks.model.BenchmarkResult;
 import hudson.plugins.benchmarks.model.Report;
 import hudson.plugins.benchmarks.parser.JSONParser;
 import hudson.plugins.benchmarks.parser.ReportParser;
@@ -43,7 +44,7 @@ public class ReportRecorder extends Recorder {
     private String glob;
     private int failureThreshold = 20;
     private int unstableThreshold = 10;
-    private String fieldsToVisualize = "average operationsPerSecond";
+    private String fieldsToVisualize = "opsUser";
 
     public int getUnstableThreshold() {
         return unstableThreshold;
@@ -133,7 +134,7 @@ public class ReportRecorder extends Recorder {
                 Report previousReport = null;
                 if ((previousReport = previousAction.getReport(currentReport.getKey())) != null) {
                     for (String benchmarkName : currentReport.getNames()) {
-                        result = compareBenchmarks(benchmarkName, currentReport, previousReport, logger);
+                        result = compareBenchmarks(benchmarkName, currentReport.get(benchmarkName), previousReport.get(benchmarkName), logger);
                     }
                 }
                 if (result.isWorseThan(build.getResult())) {
@@ -143,16 +144,21 @@ public class ReportRecorder extends Recorder {
         }
     }
 
-    private Result compareBenchmarks(String benchmarkName, Report currentReport, Report previousReport, PrintStream logger) {
+    private Result compareBenchmarks(String benchmarkName, BenchmarkResult current, BenchmarkResult previous, PrintStream logger) {
         Result result = Result.SUCCESS;
-        double previousAverage = (Double) previousReport.get(benchmarkName).get("average");
-        double currentAverage = (Double) currentReport.get(benchmarkName).get("average");
-        if (previousAverage > 0 && (currentAverage / previousAverage - 1) * 100 > unstableThreshold)
+
+        Double currentValue = (Double) current.get(Constants.FIELD_OPS_USER);
+        Double previousValue = (Double) previous.get(Constants.FIELD_OPS_USER);
+
+        if (currentValue == null || previousValue == null) return result;
+
+        if (previousValue > 0 && (currentValue / previousValue - 1) * 100 > unstableThreshold)
             result = Result.UNSTABLE;
-        if (previousAverage > 0 && (currentAverage / previousAverage - 1) * 100 > failureThreshold)
+        if (previousValue > 0 && (currentValue / previousValue - 1) * 100 > failureThreshold)
             result = Result.FAILURE;
+
         if (result.isWorseThan(Result.SUCCESS))
-            logger.printf("%s: [result: %s, gain: %g%%]%n", benchmarkName, result, (currentAverage / previousAverage - 1) * 100);
+            logger.printf("%s: [result: %s, gain: %g%%]%n", benchmarkName, result, (currentValue / previousValue - 1) * 100);
         return result;
     }
 
