@@ -147,8 +147,8 @@ public class ReportRecorder extends Recorder {
     private Result compareBenchmarks(String benchmarkName, BenchmarkResult current, BenchmarkResult previous, PrintStream logger) {
         Result result = Result.SUCCESS;
 
-        Double currentValue = (Double) current.get(Constants.FIELD_OPS_USER);
-        Double previousValue = (Double) previous.get(Constants.FIELD_OPS_USER);
+        Double currentValue = extractDouble(current, Constants.FIELD_OPS_USER);
+        Double previousValue = extractDouble(current, Constants.FIELD_OPS_USER);
 
         if (currentValue == null || previousValue == null) return result;
 
@@ -160,6 +160,12 @@ public class ReportRecorder extends Recorder {
         if (result.isWorseThan(Result.SUCCESS))
             logger.printf("%s: [result: %s, gain: %g%%]%n", benchmarkName, result, (currentValue / previousValue - 1) * 100);
         return result;
+    }
+
+    private Double extractDouble(BenchmarkResult result, String field) {
+        return result.containsKey(field) && (result.get(field) instanceof Double)
+                ? (Double) result.get(field)
+                : null;
     }
 
 }

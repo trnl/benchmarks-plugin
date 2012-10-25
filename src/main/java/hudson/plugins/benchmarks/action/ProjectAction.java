@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Action;
+import hudson.model.Run;
 import hudson.plugins.benchmarks.Constants;
 import hudson.plugins.benchmarks.model.BenchmarkResult;
 import hudson.plugins.benchmarks.model.Report;
@@ -65,14 +66,11 @@ public final class ProjectAction implements Action {
     public void doGetReport(StaplerRequest request, StaplerResponse response) throws IOException {
         String key = request.getParameter("key");
         if (StringUtils.isBlank(key)) return;
-
-        List<?> builds = getProject().getBuilds();
         List list = new ArrayList();
 
-        Collections.reverse(builds);
 
-        for (Object o : builds) {
-            AbstractBuild<?, ?> build = (AbstractBuild<?, ?>) o;
+        Run build = getProject().getBuilds().getFirstBuild();
+        while (build!=null){
             BuildAction action = build.getAction(BuildAction.class);
             if (action != null && action.getReports() != null && action.getReport(key) != null) {
                 Report r = action.getReport(key);
@@ -81,13 +79,15 @@ public final class ProjectAction implements Action {
                 map.put("benchmarks", r.getBenchmarkResults());
                 list.add(map);
             }
+            build = build.getNextBuild();
         }
 
-        Map<String,Object> r = new HashMap<String, Object>();
-        r.put("fieldsToVisualize", StringUtils.split(fieldsToVisualize," ,"));
+        Map<String, Object> r = new HashMap<String, Object>();
+        r.put("fieldsToVisualize", StringUtils.split(fieldsToVisualize, " ,"));
         r.put("report", list);
 
         Gson gson = new GsonBuilder().create();
+        response.setContentType("application/json");
         response.getWriter().write(gson.toJson(r));
     }
 
@@ -95,10 +95,8 @@ public final class ProjectAction implements Action {
         List<?> builds = getProject().getBuilds();
         List list = new ArrayList();
 
-        Collections.reverse(builds);
-
-        for (Object o : builds) {
-            AbstractBuild<?, ?> build = (AbstractBuild<?, ?>) o;
+        Run build = getProject().getBuilds().getFirstBuild();
+        while (build!=null){
             BuildAction action = build.getAction(BuildAction.class);
             if (action != null && action.getReports() != null && action.getReports() != null) {
                 int count = 0;
@@ -106,8 +104,8 @@ public final class ProjectAction implements Action {
                 for (Report r : action.getReports()) {
                     count += r.getBenchmarkResults().size();
                     for (BenchmarkResult b : r.getBenchmarkResults()) {
-                        if (b.containsKey(Constants.FIELD_TIME_USER))
-                        sum += (Double) b.get(Constants.FIELD_TIME_USER);
+                        if (b.containsKey(Constants.FIELD_TIME_USER) && (b.get(Constants.FIELD_TIME_USER) instanceof Double))
+                            sum += (Double) b.get(Constants.FIELD_TIME_USER);
                     }
                 }
                 HashMap<String, Object> map = new HashMap<String, Object>();
@@ -116,8 +114,11 @@ public final class ProjectAction implements Action {
                 map.put("sum", sum);
                 list.add(map);
             }
+            build = build.getNextBuild();
         }
+
         Gson gson = new GsonBuilder().create();
+        response.setContentType("application/json");
         response.getWriter().write(gson.toJson(list));
     }
 }

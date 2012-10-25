@@ -117,12 +117,11 @@ function drawChart() {
                 .attr('tooltip', function (d) {
                     var text = "";
                     text += "<div class='main'><b>opsUser:</b>" + d.opsUser + "</div>";
-                    text += "<div><b>Min:</b>" + d.min + "</div>";
-                    text += "<div><b>Max:</b>" + d.max + "</div>";
-                    text += "<div><b>Median:</b>" + d.median + "</div>";
-                    text += "<div><b>90%:</b>" + d['90percentile'] + "</div>";
-                    text += "<div><b>Execution time:</b>" + d.executionTime + "</div>";
-                    text += "<div><b>Invocations:</b>" + d.invocations + "</div>";
+                    text += "<div><b>opsReal:</b>" + d.opsReal + "</div>";
+                    text += "<div><b>timeUser:</b>" + d.timeUser + "</div>";
+                    text += "<div><b>timeReal:</b>" + d.timeReal + "</div>";
+                    text += "<div><b>iterations:</b>" + d.iterations + "</div>";
+                    text += "<div><b>rounds:</b>" + d.rounds + "</div>";
                     return text;
                 })
                 .attr('cx', function (d) {

@@ -37,13 +37,25 @@ function drawChart(panel, result, fieldName) {
             return m(g[fieldName])
         }).interpolate("linear");
     o.selectAll(".data-line").data([result.values]).enter().append("path").attr("class", "data-line").style("stroke", color(result.key)).attr("d", j(result.values));
-    o.selectAll(".data-point").data(result.values).enter().append("svg:circle").attr("class", "data-point").attr("cx",function (g) {
-        return n(g.build)
-    }).style("stroke", color(result.key)).attr("cy",function (g) {
+    o.selectAll(".data-point").data(result.values).enter()
+        .append("svg:circle")
+        .attr("class", "data-point")
+        .attr("tooltip", function (d) {
+            var text = "";
+            text += "<div class='main'><b>opsUser:</b>" + d.opsUser + "</div>";
+            text += "<div><b>opsReal:</b>" + d.opsReal + "</div>";
+            text += "<div><b>timeUser:</b>" + d.timeUser + "</div>";
+            text += "<div><b>timeReal:</b>" + d.timeReal + "</div>";
+            text += "<div><b>iterations:</b>" + d.iterations + "</div>";
+            text += "<div><b>rounds:</b>" + d.rounds + "</div>";
+            return text;
+        })
+        .attr("cx",function (g) {return n(g.build)})
+        .style("stroke", color(result.key)).attr("cy",function (g) {
             return m(g[fieldName])
-        }).attr("r", 4).on("mouseover",function (g) {
+        })
+        .attr("r", 4).on("mouseover",function (g) {
             d3.select(this).transition().style("fill", color(g.title));
-            d3.select(this).attr("tooltip", "text")
         }).on("mouseout", function () {
             d3.select(this).transition().style("fill", "#fff")
         });
@@ -77,9 +89,9 @@ function drawCharts(b) {
     panel.append("h2")
         .text(extractName(b))
         .append('a')
-        .attr('href','#')
+        .attr('href', '#')
         .attr('id', extractName(b))
-        .attr('class','jump-to')
+        .attr('class', 'jump-to')
         .text('↑');
     panel.classed("chart");
     fieldsToVisualize.forEach(function (field) {
