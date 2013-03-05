@@ -50,9 +50,10 @@ function drawChart() {
             .attr('transform', 'translate(' + margin * 1.5 + ',' + margin * 0.5 + ')');
 
         // y ticks and labels
-        var yTick = g.append('svg:g')
-            .attr('class', 'yTick')
-            .call(yAxis);
+        //var yTick = g.append('svg:g')
+        //    .attr('class', 'yTick')
+        //    .call(yAxis);
+
         var xTick = g.append('svg:g')
             .attr('class', 'xTick')
             .call(xAxis);

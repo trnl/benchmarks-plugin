@@ -5,6 +5,19 @@
         <l:main-panel>
             <h1 class="bhead">Benchmarks</h1>
 
+            <div class="hint">
+                <h3>ops = time / iterations</h3>
+                <ul>
+                    <li>ops - Operations per second</li>
+                    <li>time - Total execution time</li>
+                    <li>iterations - count iterations for round</li>
+                </ul>
+                <p>
+                    All charts builds with use values of operations per second for User time.
+                </p>
+            </div>
+            <br/>
+
             <j:forEach var="report" items="${it.reports}">
                 <div class="report">
                     <h2>${report.key}
