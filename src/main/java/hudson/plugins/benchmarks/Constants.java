@@ -12,4 +12,6 @@ public class Constants {
     public static final String FIELD_TIME_REAL = "timeReal";
     public static final String FIELD_OPS_REAL = "opsReal";
     public static final String FIELD_CLASS = "class";
+    public static final String FIELD_TITLE = "title";
+    public static final String FIELD_LATEST_BUILD = "latestBuild";
 }

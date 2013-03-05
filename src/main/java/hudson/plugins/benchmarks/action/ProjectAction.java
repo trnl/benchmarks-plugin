@@ -70,7 +70,7 @@ public final class ProjectAction implements Action {
 
 
         Run build = getProject().getBuilds().getFirstBuild();
-        while (build!=null){
+        while (build != null) {
             BuildAction action = build.getAction(BuildAction.class);
             if (action != null && action.getReports() != null && action.getReport(key) != null) {
                 Report r = action.getReport(key);
@@ -92,11 +92,10 @@ public final class ProjectAction implements Action {
     }
 
     public void doGetAll(StaplerRequest request, StaplerResponse response) throws IOException {
-        List<?> builds = getProject().getBuilds();
         List list = new ArrayList();
 
         Run build = getProject().getBuilds().getFirstBuild();
-        while (build!=null){
+        while (build != null) {
             BuildAction action = build.getAction(BuildAction.class);
             if (action != null && action.getReports() != null && action.getReports() != null) {
                 int count = 0;
@@ -120,5 +119,42 @@ public final class ProjectAction implements Action {
         Gson gson = new GsonBuilder().create();
         response.setContentType("application/json");
         response.getWriter().write(gson.toJson(list));
+    }
+
+    //json
+    public void doGetLatest(StaplerRequest request, StaplerResponse response) throws IOException {
+        HashMap<String, Object> out = new HashMap<String, Object>();
+
+        Run build = getProject().getBuilds().getLastBuild();
+        while (build != null) {
+            BuildAction action = build.getAction(BuildAction.class);
+            if (action != null && action.getReports() != null) {
+                for (Report r : action.getReports()) {
+                    for (BenchmarkResult br : r.getBenchmarkResults()) {
+                        String key = String.format("%s.%s", br.get(Constants.FIELD_CLASS), br.get(Constants.FIELD_TITLE));
+                        if (!out.containsKey(key)) {
+                            HashMap<String, Object> element = new HashMap<String, Object>();
+                            element.putAll(br);
+                            element.put(Constants.FIELD_LATEST_BUILD, build.getNumber());
+                            out.put(key, element);
+                        }
+                    }
+                }
+            }
+            build = build.getPreviousBuild();
+        }
+
+        Gson gson = new GsonBuilder().create();
+
+        if (request.hasParameter("callback")) {
+            String callbackName = request.getParameter("callback");
+
+            response.setContentType("application/javascript");
+            response.getWriter().write(String.format("%s({\"values\":%s});", callbackName, gson.toJson(out.values())));
+        } else {
+            response.setContentType("application/json");
+            response.getWriter().write(gson.toJson(out.values()));
+        }
+
     }
 }
