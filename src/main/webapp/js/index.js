@@ -34,7 +34,8 @@ function drawChart() {
             .orient('left')
             .tickSize(-w)
             .tickFormat(function (g) {
-                return d3.format(".3g")(g);
+                console.log( g )
+                return d3.format(".2s")(g)
             })
             .tickPadding(15);
         var xAxis = d3.svg.axis()
@@ -50,9 +51,9 @@ function drawChart() {
             .attr('transform', 'translate(' + margin * 1.5 + ',' + margin * 0.5 + ')');
 
         // y ticks and labels
-        //var yTick = g.append('svg:g')
-        //    .attr('class', 'yTick')
-        //    .call(yAxis);
+        var yTick = g.append('svg:g')
+            .attr('class', 'yTick')
+            .call(yAxis);
 
         var xTick = g.append('svg:g')
             .attr('class', 'xTick')
