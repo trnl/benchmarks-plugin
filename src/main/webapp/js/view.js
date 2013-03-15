@@ -22,7 +22,7 @@ function drawChart(panel, result, fieldName) {
     var n = d3.scale.ordinal().domain(e).rangePoints([0, w]);
     var m = d3.scale.linear().range([h, 0]).domain([q, s]);
     var a = d3.svg.axis().scale(m).orient("left").tickSize(-w).tickPadding(15).tickFormat(function (g) {
-        return d3.format(".3g")(g);
+        return d3.format(".2s")(g);
     });
     var l = d3.svg.axis().scale(n).tickSize(h).tickPadding(15);
     var p = t.append("svg:g").attr("class", "yTick").call(a);
