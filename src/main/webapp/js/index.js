@@ -34,7 +34,6 @@ function drawChart() {
             .orient('left')
             .tickSize(-w)
             .tickFormat(function (g) {
-                console.log( g )
                 return d3.format(".2s")(g)
             })
             .tickPadding(15);
