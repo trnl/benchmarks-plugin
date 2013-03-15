@@ -11,8 +11,12 @@
                 <h3>ops = time / iterations</h3>
                 <ul>
                     <li>ops - Operations per second</li>
-                    <li>time - Total execution time</li>
+                    <li>time - Total execution time in seconds</li>
                     <li>iterations - count iterations for round</li>
+                </ul>
+                <ul>
+                    <li>Abscissa - <strong>OX</strong> - Builds history</li>
+                    <li>Ordinates - <strong>OY</strong> - Operations per second or execution time in seconds (user CPU time)</li>
                 </ul>
             </div>
             <script src="/plugin/benchmarks/js/d3.v2.min.js" type="text/javascript"/>

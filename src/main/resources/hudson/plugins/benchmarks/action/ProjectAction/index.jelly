@@ -9,12 +9,13 @@
                 <h3>ops = time / iterations</h3>
                 <ul>
                     <li>ops - Operations per second</li>
-                    <li>time - Total execution time</li>
+                    <li>time - Total execution time in seconds</li>
                     <li>iterations - count iterations for round</li>
                 </ul>
-                <p>
-                    All charts builds with use values of operations per second for User time.
-                </p>
+                <ul>
+                    <li>Abscissa - <strong>OX</strong> - Builds history</li>
+                    <li>Ordinates - <strong>OY</strong> - Operations per second (user CPU time)</li>
+                </ul>
             </div>
             <br/>
 
