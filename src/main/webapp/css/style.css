@@ -79,12 +79,27 @@ line {
     margin: 0;
 }
 
-#tt b{
-    margin-right: 5px;
+#tt h3{
+    margin:0;
+    background: #333;
+    color: #fff;
+    padding: 0.2em;
 }
 
-#tt .main{
-    color: #4571af;
+#tt table {
+    width: 100%;
+    margin: 0.5em 0;
+}
+
+#tt table th {
+    text-align: left;
+    width: 80px;
+}
+
+#tt table tr.main th,
+#tt table tr.main td {
+    color: #6a5acd;
+    background: #f0f0f0;
 }
 
 #f-benchmarks-chart *{

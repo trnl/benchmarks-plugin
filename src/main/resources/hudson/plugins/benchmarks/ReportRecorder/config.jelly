@@ -29,4 +29,9 @@
     <f:entry title="Additional fields to plot" field="fieldsToVisualize">
         <f:textbox default="opsUser timeUser"/>
     </f:entry>
+
+    <f:entry title="Git root with changes" field="pathToGitChanges">
+        <f:textbox default="."/>
+    </f:entry>
+
 </j:jelly>

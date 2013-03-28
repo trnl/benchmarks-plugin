@@ -73,15 +73,18 @@ function drawChart() {
         //data work
         var benchmarks = d3.merge(data.report.map(function (b) {
             b.benchmarks.forEach(function (e) {
-                e.build = b.build
+                e.build = b.build;
+                e.change = b.change
             });
             return b.benchmarks;
         }));
+
         var nest = d3.nest()
             .key(function (i) {
                 return i.title
             })
             .entries(benchmarks);
+
 
         nest.forEach(function (object) {
             var line = lines.append('svg:g')
@@ -117,12 +120,26 @@ function drawChart() {
                 .attr('class', 'data-point')
                 .attr('tooltip', function (d) {
                     var text = "";
-                    text += "<div class='main'><b>opsUser:</b>" + d.opsUser + "</div>";
-                    text += "<div><b>opsReal:</b>" + d.opsReal + "</div>";
-                    text += "<div><b>timeUser:</b>" + d.timeUser + "</div>";
-                    text += "<div><b>timeReal:</b>" + d.timeReal + "</div>";
-                    text += "<div><b>iterations:</b>" + d.iterations + "</div>";
-                    text += "<div><b>rounds:</b>" + d.rounds + "</div>";
+                    text += "<h3>" + d.build + "</h3>";
+
+                    text += "<table>";
+                    text += "<tr class=main><th>Ops User</th><td>" + d.opsUser.toFixed(12) + "</td></tr>";
+                    text += "<tr><th>Ops Real</th><td>" + d.opsReal.toFixed(12) + "</td></tr>";
+                    text += "<tr><th>Time User</th><td>" + d.timeUser.toFixed(6) + "</td></tr>";
+                    text += "<tr><th>Time Real</th><td>" + d.timeReal.toFixed(6) + "</td></tr>";
+                    text += "<tr><th>Iterations</th><td>" + d.iterations+ "</td></tr>";
+                    text += "<tr><th>Rounds</th><td>" + d.rounds+ "</td></tr>";
+                    text += "</table>";
+
+                    if ( d.change ) {
+                        text += "<table>";
+                        text += "<tr><th>Commit</th><td>" + d.change.id+ "</td></tr>";
+                        text += "<tr><th>Date</th><td>" + d.change.date + "</td></tr>";
+                        text += "<tr><th>Author</th><td>" + d.change.author + "</td></tr>";
+                        text += "<tr><th>E-Mail</th><td>" + d.change.email + "</td></tr>";
+                        text += "</table>";
+                    }
+
                     return text;
                 })
                 .attr('cx', function (d) {
