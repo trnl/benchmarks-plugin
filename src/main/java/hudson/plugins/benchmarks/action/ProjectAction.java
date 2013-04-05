@@ -9,6 +9,7 @@ import hudson.model.Run;
 import hudson.plugins.benchmarks.Constants;
 import hudson.plugins.benchmarks.model.BenchmarkResult;
 import hudson.plugins.benchmarks.model.Report;
+import hudson.plugins.benchmarks.model.Change;
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -74,8 +75,12 @@ public final class ProjectAction implements Action {
             BuildAction action = build.getAction(BuildAction.class);
             if (action != null && action.getReports() != null && action.getReport(key) != null) {
                 Report r = action.getReport(key);
+                Change c = action.getChange();
+
                 HashMap<String, Object> map = new HashMap<String, Object>();
+
                 map.put("build", build.getDisplayName());
+                map.put("change", c.toHashMap() );
                 map.put("benchmarks", r.getBenchmarkResults());
                 list.add(map);
             }
@@ -108,7 +113,10 @@ public final class ProjectAction implements Action {
                     }
                 }
                 HashMap<String, Object> map = new HashMap<String, Object>();
+                Change c = action.getChange();
+
                 map.put("build", build.getDisplayName());
+                map.put("change", c.toHashMap() );
                 map.put("count", count);
                 map.put("sum", sum);
                 list.add(map);

@@ -7,8 +7,10 @@ import hudson.model.*;
 import hudson.plugins.benchmarks.action.BuildAction;
 import hudson.plugins.benchmarks.action.ProjectAction;
 import hudson.plugins.benchmarks.model.BenchmarkResult;
+import hudson.plugins.benchmarks.model.Change;
 import hudson.plugins.benchmarks.model.Report;
 import hudson.plugins.benchmarks.parser.JSONParser;
+import hudson.plugins.benchmarks.parser.GitParser;
 import hudson.plugins.benchmarks.parser.ReportParser;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
@@ -45,6 +47,7 @@ public class ReportRecorder extends Recorder {
     private int failureThreshold = 20;
     private int unstableThreshold = 10;
     private String fieldsToVisualize = "opsUser";
+    private String pathToGitChanges = ".";
 
     public int getUnstableThreshold() {
         return unstableThreshold;
@@ -70,13 +73,22 @@ public class ReportRecorder extends Recorder {
         this.fieldsToVisualize = fieldsToVisualize;
     }
 
+    public String getPathToGitChanges() {
+        return pathToGitChanges;
+    }
+
+    public void setPathToGitChanges(String pathToGitChanges) {
+        this.pathToGitChanges = pathToGitChanges;
+    }
+
     @DataBoundConstructor
 
-    public ReportRecorder(String glob, int failureThreshold, int unstableThreshold, String fieldsToVisualize) {
+    public ReportRecorder(String glob, int failureThreshold, int unstableThreshold, String fieldsToVisualize, String pathToGitChanges) {
         this.glob = glob;
         this.failureThreshold = failureThreshold;
         this.unstableThreshold = unstableThreshold;
         this.fieldsToVisualize = fieldsToVisualize;
+        this.pathToGitChanges = pathToGitChanges;
     }
 
     public String getGlob() {
@@ -115,17 +127,20 @@ public class ReportRecorder extends Recorder {
         Collection<Report> reports = parser.parse(Arrays.asList(files), listener);
         logger.println("Parsing finished.\n");
 
-        BuildAction a = new BuildAction(build, reports);
+        GitParser git = new GitParser( build.getWorkspace().child(pathToGitChanges).toString() );
+        Change change = git.getChangeHead();
+
+        BuildAction a = new BuildAction(build, reports, change);
         build.addAction(a);
 
         logger.println("Analysing changes.");
-        analyseChanges(build, logger, reports);
+        analyseChanges(build, logger, reports, change);
         logger.printf("\nResult: %s.%n%n", build.getResult());
 
         return true;
     }
 
-    private void analyseChanges(AbstractBuild<?, ?> build, PrintStream logger, Collection<Report> reports) {
+    private void analyseChanges(AbstractBuild<?, ?> build, PrintStream logger, Collection<Report> reports, Change change) {
         Result result = Result.SUCCESS;
         AbstractBuild<?, ?> previousBuild = build.getPreviousBuild();
         BuildAction previousAction = null;
@@ -134,7 +149,7 @@ public class ReportRecorder extends Recorder {
                 Report previousReport = null;
                 if ((previousReport = previousAction.getReport(currentReport.getKey())) != null) {
                     for (String benchmarkName : currentReport.getNames()) {
-                        result = compareBenchmarks(benchmarkName, currentReport.get(benchmarkName), previousReport.get(benchmarkName), logger);
+                        result = compareBenchmarks(benchmarkName, currentReport.get(benchmarkName), previousReport.get(benchmarkName), logger, change);
                     }
                 }
                 if (result.isWorseThan(build.getResult())) {
@@ -144,7 +159,7 @@ public class ReportRecorder extends Recorder {
         }
     }
 
-    private Result compareBenchmarks(String benchmarkName, BenchmarkResult current, BenchmarkResult previous, PrintStream logger) {
+    private Result compareBenchmarks(String benchmarkName, BenchmarkResult current, BenchmarkResult previous, PrintStream logger, Change change) {
         Result result = Result.SUCCESS;
 
         Double currentValue = extractDouble(current, Constants.FIELD_OPS_USER);
@@ -157,8 +172,10 @@ public class ReportRecorder extends Recorder {
         if (previousValue > 0 && (currentValue / previousValue - 1) * 100 > failureThreshold)
             result = Result.FAILURE;
 
-        if (result.isWorseThan(Result.SUCCESS))
+        if (result.isWorseThan(Result.SUCCESS)) {
             logger.printf("%s: [result: %s, gain: %g%%]%n", benchmarkName, result, (currentValue / previousValue - 1) * 100);
+            logger.printf("Commit %s [%s, %s, %s]", change.getId(), change.getAuthor(), change.getDate().toString(), change.getMessage() );
+        }
         return result;
     }
 

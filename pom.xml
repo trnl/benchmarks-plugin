@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>1.486</version>
+        <version>1.480</version>
     </parent>
     <artifactId>benchmarks</artifactId>
     <packaging>hpi</packaging>
@@ -28,8 +28,12 @@
             <artifactId>guava</artifactId>
             <version>13.0.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.jgit</groupId>
+            <artifactId>org.eclipse.jgit</artifactId>
+            <version>2.2.0.201212191850-r</version>
+        </dependency>
     </dependencies>
-
 
     <build>
         <plugins>
@@ -68,6 +72,11 @@
     </pluginRepositories>
 
     <repositories>
+        <repository>
+            <id>jgit-repository</id>
+            <name>Eclipse JGit Repository</name>
+            <url>http://download.eclipse.org/jgit/maven</url>
+        </repository>
         <repository>
             <id>google-project</id>
             <url>http://maven-confluence-plugin.googlecode.com/svn/mavenrepo</url>

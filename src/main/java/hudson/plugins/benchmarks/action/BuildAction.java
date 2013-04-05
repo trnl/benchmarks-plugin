@@ -2,6 +2,7 @@ package hudson.plugins.benchmarks.action;
 
 import hudson.model.AbstractBuild;
 import hudson.model.Action;
+import hudson.plugins.benchmarks.model.Change;
 import hudson.plugins.benchmarks.model.Report;
 
 import java.util.Collection;
@@ -12,9 +13,11 @@ public class BuildAction implements Action {
 
     private final AbstractBuild<?, ?> build;
     private Map<String, Report> map;
+    private Change change;
 
-    public BuildAction(AbstractBuild<?, ?> build, Collection<Report> reports) {
+    public BuildAction(AbstractBuild<?, ?> build, Collection<Report> reports, Change change) {
         this.build = build;
+        this.change = change;
         this.map = new HashMap<String, Report>();
         for (Report r : reports)
             map.put(r.getKey(), r);
@@ -42,5 +45,9 @@ public class BuildAction implements Action {
 
     public Report getReport(String key){
         return map.get(key);
+    }
+
+    public Change getChange(){
+        return change;
     }
 }
