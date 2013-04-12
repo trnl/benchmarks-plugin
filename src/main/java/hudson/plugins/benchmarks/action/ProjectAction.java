@@ -77,12 +77,9 @@ public final class ProjectAction implements Action {
                 Report r = action.getReport(key);
 
                 HashMap<String, Object> map = new HashMap<String, Object>();
+                Change c = action.getChange();
 
-                try {
-                    Change c = action.getChange();
-                    map.put("change", c.toHashMap() );
-                }
-                catch ( NullPointerException e ) {}
+                if ( c != null ) map.put("change", c.toHashMap() );
 
                 map.put("build", build.getDisplayName());
                 map.put("benchmarks", r.getBenchmarkResults());
@@ -118,12 +115,9 @@ public final class ProjectAction implements Action {
                 }
 
                 HashMap<String, Object> map = new HashMap<String, Object>();
+                Change c = action.getChange();
 
-                try {
-                    Change c = action.getChange();
-                    map.put("change", c.toHashMap() );
-                }
-                catch ( NullPointerException e ) {}
+                if (c != null) map.put("change", c.toHashMap() );
 
                 map.put("build", build.getDisplayName());
                 map.put("count", count);
