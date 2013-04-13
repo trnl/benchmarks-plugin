@@ -1,3 +1,24 @@
+
+// Only for D3.js [uses getAttribute()]
+// Checks to has class
+// fix: Object #<SVGCircleElement> has no method 'hasClassName'
+
+SVGCircleElement.prototype.hasClassName = function(name){
+
+    var className = this.getAttribute('class');
+    if ( className ) {
+        var classList = className.toUpperCase().split(' ');
+        var nameUpper = name.toUpperCase();
+
+        for ( var i = 0; i < classList.length; i++ ) {
+            if ( classList[i] === nameUpper ) return true;
+        }
+    }
+    return false;
+};
+
+// -------------------------------------------------------------------------------------
+
 var color = d3.scale.category20(),
     margin = 40,
 //    w = d3.select('#main-panel').property('clientWidth') - margin * 2.5,
@@ -69,7 +90,6 @@ function drawChart() {
         var lines = g.append('svg:g')
             .attr('class', 'lines');
 
-
         //data work
         var benchmarks = d3.merge(data.report.map(function (b) {
             b.benchmarks.forEach(function (e) {
@@ -85,7 +105,6 @@ function drawChart() {
             })
             .entries(benchmarks);
 
-
         nest.forEach(function (object) {
             var line = lines.append('svg:g')
                 .attr('key', object.key);
@@ -99,7 +118,6 @@ function drawChart() {
                     return y(d.opsUser)
                 })
                 .interpolate("linear");
-
 
             // Draw the lines
             line
@@ -160,11 +178,9 @@ function drawChart() {
                 });
         });
 
-
         var legend = g.append('svg:g')
             .attr('class', 'legend')
             .attr('transform', "translate(0," + (xTick.node().getBoundingClientRect().height + margin / 2) + ")");
-
 
         var entry = legend
             .selectAll('.legend-entry')
@@ -250,8 +266,6 @@ function drawChart() {
         e.select('svg')
             .attr('height', xTick.node().getBoundingClientRect().height + legend.node().getBoundingClientRect().height + margin + 10)
     });
-
-
 }
 
 d3.selectAll('.chart').each(drawChart);
