@@ -175,6 +175,16 @@ function drawChart() {
                 })
                 .on('mouseout', function () {
                     d3.select(this).transition().style('fill', '#fff');
+                }).each(function(){
+                    var text = this.getAttribute("tooltip");
+                    this.onmouseover = function(ev) {
+                        var delay = this.getAttribute("nodismiss")!=null ? 99999999 : 5000;
+                        tooltip.cfg.setProperty("autodismissdelay",delay);
+                        return tooltip.onContextMouseOver.call(this,YAHOO.util.Event.getEvent(ev),tooltip);
+                    }
+                    this.onmousemove = function(ev) { return tooltip.onContextMouseMove.call(this,YAHOO.util.Event.getEvent(ev),tooltip); }
+                    this.onmouseout  = function(ev) { return tooltip.onContextMouseOut .call(this,YAHOO.util.Event.getEvent(ev),tooltip); }
+                    this.title = text;
                 });
         });
 
