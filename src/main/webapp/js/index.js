@@ -183,14 +183,14 @@ function drawChart() {
                     d3.select(this).attr('tooltip', 'text');
 
                     tooltip.cfg.setProperty("autodismissdelay",25000);
-                    return tooltip.onContextMouseOver.call(this,YAHOO.util.Event.getEvent(this),tooltip);
+                    return tooltip.onContextMouseOver.call(this,YAHOO.util.Event.getEvent(),tooltip);
                 })
                 .on('mouseout', function () {
                     d3.select(this).transition().style('fill', '#fff');
-                    return tooltip.onContextMouseOut .call(this,YAHOO.util.Event.getEvent(this),tooltip);
+                    return tooltip.onContextMouseOut .call(this,YAHOO.util.Event.getEvent(),tooltip);
                 })
                 .on('mousemove', function () {
-                    return tooltip.onContextMouseMove.call(this,YAHOO.util.Event.getEvent(this),tooltip);
+                    return tooltip.onContextMouseMove.call(this,YAHOO.util.Event.getEvent(),tooltip);
                 });
         });
 
