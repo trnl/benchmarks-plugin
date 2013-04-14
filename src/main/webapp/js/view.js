@@ -99,21 +99,19 @@ function drawChart(panel, result, fieldName) {
             return m(g[fieldName])
         })
         .attr("r", 4)
-        .each(function(){
-            this.onmouseover = function(ev) {
-                d3.select(this).transition().style('fill', color(d.title));
-                d3.select(this).attr('tooltip', 'text');
-                tooltip.cfg.setProperty("autodismissdelay",25000);
-                return tooltip.onContextMouseOver.call(this,YAHOO.util.Event.getEvent(ev),tooltip);
-            }
-            this.onmouseout  = function(ev) {
-                d3.select(this).transition().style('fill', '#fff');
-                return tooltip.onContextMouseOut .call(this,YAHOO.util.Event.getEvent(ev),tooltip);
-            }
-            this.onmousemove = function(ev) {
-                return tooltip.onContextMouseMove.call(this,YAHOO.util.Event.getEvent(ev),tooltip);
-            }
-            this.title = this.getAttribute("tooltip");
+        .on('mouseover', function (d) {
+            d3.select(this).transition().style('fill', color(d.title));
+            d3.select(this).attr('tooltip', 'text');
+
+            tooltip.cfg.setProperty("autodismissdelay",25000);
+            return tooltip.onContextMouseOver.call(this,YAHOO.util.Event.getEvent(this),tooltip);
+        })
+        .on('mouseout', function () {
+            d3.select(this).transition().style('fill', '#fff');
+            return tooltip.onContextMouseOut .call(this,YAHOO.util.Event.getEvent(this),tooltip);
+        })
+        .on('mousemove', function () {
+            return tooltip.onContextMouseMove.call(this,YAHOO.util.Event.getEvent(this),tooltip);
         });
     var c = t.append("svg:g").attr("class", "legend").attr("transform", "translate(0," + (b.node().getBoundingClientRect().height + margin / 2) + ")");
     var d = c.selectAll(".legend-entry").data([fieldName]).enter().append("svg:g").attr("class", "legend-entry");
