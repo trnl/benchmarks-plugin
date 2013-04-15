@@ -75,12 +75,16 @@ public final class ProjectAction implements Action {
             BuildAction action = build.getAction(BuildAction.class);
             if (action != null && action.getReports() != null && action.getReport(key) != null) {
                 Report r = action.getReport(key);
-                Change c = action.getChange();
 
                 HashMap<String, Object> map = new HashMap<String, Object>();
 
+                try {
+                    Change c = action.getChange();
+                    map.put("change", c.toHashMap() );
+                }
+                catch ( NullPointerException e ) {}
+
                 map.put("build", build.getDisplayName());
-                map.put("change", c.toHashMap() );
                 map.put("benchmarks", r.getBenchmarkResults());
                 list.add(map);
             }
@@ -112,11 +116,16 @@ public final class ProjectAction implements Action {
                             sum += (Double) b.get(Constants.FIELD_TIME_USER);
                     }
                 }
+
                 HashMap<String, Object> map = new HashMap<String, Object>();
-                Change c = action.getChange();
+
+                try {
+                    Change c = action.getChange();
+                    map.put("change", c.toHashMap() );
+                }
+                catch ( NullPointerException e ) {}
 
                 map.put("build", build.getDisplayName());
-                map.put("change", c.toHashMap() );
                 map.put("count", count);
                 map.put("sum", sum);
                 list.add(map);
