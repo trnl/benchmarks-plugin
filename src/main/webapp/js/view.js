@@ -1,3 +1,24 @@
+
+// Only for D3.js [uses getAttribute()]
+// Checks to has class
+// fix: Object #<SVGCircleElement> has no method 'hasClassName'
+
+SVGCircleElement.prototype.hasClassName = function(name){
+
+    var className = this.getAttribute('class');
+    if ( className ) {
+        var classList = className.toUpperCase().split(' ');
+        var nameUpper = name.toUpperCase();
+
+        for ( var i = 0; i < classList.length; i++ ) {
+            if ( classList[i] === nameUpper ) return true;
+        }
+    }
+    return false;
+};
+
+// -------------------------------------------------------------------------------------
+
 var color = d3.scale.category10(), margin = 40, w = 900, h = 150;
 var fieldsToVisualize;
 
@@ -36,6 +57,7 @@ function drawChart(panel, result, fieldName) {
     }).y(function (g) {
             return m(g[fieldName])
         }).interpolate("linear");
+
     o.selectAll(".data-line").data([result.values]).enter().append("path").attr("class", "data-line").style("stroke", color(result.key)).attr("d", j(result.values));
     o.selectAll(".data-point").data(result.values).enter()
         .append("svg:circle")
@@ -73,6 +95,17 @@ function drawChart(panel, result, fieldName) {
             d3.select(this).transition().style("fill", color(g.title));
         }).on("mouseout", function () {
             d3.select(this).transition().style("fill", "#fff")
+        })
+        .each(function(){
+            var text = this.getAttribute("tooltip");
+            this.onmouseover = function(ev) {
+                var delay = this.getAttribute("nodismiss")!=null ? 99999999 : 5000;
+                tooltip.cfg.setProperty("autodismissdelay",delay);
+                return tooltip.onContextMouseOver.call(this,YAHOO.util.Event.getEvent(ev),tooltip);
+            }
+            this.onmousemove = function(ev) { return tooltip.onContextMouseMove.call(this,YAHOO.util.Event.getEvent(ev),tooltip); }
+            this.onmouseout  = function(ev) { return tooltip.onContextMouseOut .call(this,YAHOO.util.Event.getEvent(ev),tooltip); }
+            this.title = text;
         });
     var c = t.append("svg:g").attr("class", "legend").attr("transform", "translate(0," + (b.node().getBoundingClientRect().height + margin / 2) + ")");
     var d = c.selectAll(".legend-entry").data([fieldName]).enter().append("svg:g").attr("class", "legend-entry");
@@ -99,6 +132,7 @@ function drawChart(panel, result, fieldName) {
 function extractName(b) {
     return b.key.substring(b.key.lastIndexOf(".") + 1, b.key.length);
 }
+
 function drawCharts(b) {
     var panel = d3.select("#main-panel").append("div").attr("class", "report");
     panel.append("h2")
@@ -113,6 +147,7 @@ function drawCharts(b) {
         drawChart(panel, b, field);
     });
 }
+
 d3.json("getReport?key=" + d3.select(".report-title").text(), function (data) {
     fieldsToVisualize = data.fieldsToVisualize;
     var benchmarks = d3.merge(data.report.map(function (build) {
