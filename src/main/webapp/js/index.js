@@ -17,6 +17,14 @@ SVGCircleElement.prototype.hasClassName = function(name){
     return false;
 };
 
+Number.prototype.smartFixed = function( decimals ) {
+
+    if(typeof(decimals)==='undefined') decimals = 2;
+
+    if ( this % 1 === 0 ) return Math.round(this);
+    else return this.toFixed(decimals);
+};
+
 // -------------------------------------------------------------------------------------
 
 var color = d3.scale.category20(),
@@ -138,13 +146,13 @@ function drawChart() {
                 .attr('class', 'data-point')
                 .attr('tooltip', function (d) {
                     var text = "";
-                    text += "<h3>" + d.build + "</h3>";
+                    text += "<h3>Build " + d.build + "</h3>";
 
                     text += "<table>";
-                    text += "<tr class=main><th>Ops User</th><td>" + d.opsUser.toFixed(12) + "</td></tr>";
-                    text += "<tr><th>Ops Real</th><td>" + d.opsReal.toFixed(12) + "</td></tr>";
-                    text += "<tr><th>Time User</th><td>" + d.timeUser.toFixed(6) + "</td></tr>";
-                    text += "<tr><th>Time Real</th><td>" + d.timeReal.toFixed(6) + "</td></tr>";
+                    text += "<tr class=main><th>Ops User</th><td>" + d.opsUser.smartFixed(12) + " ops.</td></tr>";
+                    text += "<tr><th>Ops Real</th><td>" + d.opsReal.smartFixed(12) + " ops.</td></tr>";
+                    text += "<tr><th>Time User</th><td>" + d.timeUser.smartFixed(6) + " sec.</td></tr>";
+                    text += "<tr><th>Time Real</th><td>" + d.timeReal.smartFixed(6) + " sec.</td></tr>";
                     text += "<tr><th>Iterations</th><td>" + d.iterations+ "</td></tr>";
                     text += "<tr><th>Rounds</th><td>" + d.rounds+ "</td></tr>";
                     text += "</table>";
@@ -169,22 +177,21 @@ function drawChart() {
                     return y(d.opsUser)
                 })
                 .attr('r', 4)
-                .on('mouseover', function (d) {
-                    d3.select(this).transition().style('fill', color(d.title));
-                    d3.select(this).attr('tooltip', 'text');
-                })
-                .on('mouseout', function () {
-                    d3.select(this).transition().style('fill', '#fff');
-                }).each(function(){
-                    var text = this.getAttribute("tooltip");
+                .each(function(){
                     this.onmouseover = function(ev) {
-                        var delay = this.getAttribute("nodismiss")!=null ? 99999999 : 5000;
-                        tooltip.cfg.setProperty("autodismissdelay",delay);
+                        d3.select(this).transition().style('fill', color(d.title));
+                        d3.select(this).attr('tooltip', 'text');
+                        tooltip.cfg.setProperty("autodismissdelay",25000);
                         return tooltip.onContextMouseOver.call(this,YAHOO.util.Event.getEvent(ev),tooltip);
                     }
-                    this.onmousemove = function(ev) { return tooltip.onContextMouseMove.call(this,YAHOO.util.Event.getEvent(ev),tooltip); }
-                    this.onmouseout  = function(ev) { return tooltip.onContextMouseOut .call(this,YAHOO.util.Event.getEvent(ev),tooltip); }
-                    this.title = text;
+                    this.onmouseout  = function(ev) {
+                        d3.select(this).transition().style('fill', '#fff');
+                        return tooltip.onContextMouseOut .call(this,YAHOO.util.Event.getEvent(ev),tooltip);
+                    }
+                    this.onmousemove = function(ev) {
+                        return tooltip.onContextMouseMove.call(this,YAHOO.util.Event.getEvent(ev),tooltip);
+                    }
+                    this.title = this.getAttribute("tooltip");
                 });
         });
 
